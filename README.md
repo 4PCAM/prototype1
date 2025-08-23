@@ -30,7 +30,7 @@ To use this system, simply clone or download the repository and open the index.h
 ### **Local Installation**
 
 1. Clone the repository:  
-   git clone https://github.com/your-username/4-pcam-system.git
+   git clone: https://github.com/4PCAM/prototype1
 
 2. Navigate to the project directory:  
    cd 4-pcam-system
