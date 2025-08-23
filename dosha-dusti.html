@@ -250,6 +250,38 @@
             font-size: 1.3em;
         }
 
+        .dosha-interpretation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .dominant-dosha {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .severity-normal { background: #d4edda; color: #155724; }
+        .severity-mild { background: #fff3cd; color: #856404; }
+        .severity-moderate { background: #f8d7da; color: #721c24; }
+        .severity-severe { background: #d1ecf1; color: #0c5460; }
+
         .nav-buttons {
             display: flex;
             justify-content: space-between;
@@ -312,6 +344,14 @@
 
         .auto-save-indicator.show {
             opacity: 1;
+        }
+
+        .recommendation-section {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 5px solid #74b9ff;
         }
 
         @media (max-width: 768px) {
@@ -488,11 +528,24 @@
             kapha: 0,
             selections: {},
             completed: false,
-            timestamp: null
+            timestamp: null,
+            dominantDosha: '',
+            dominantPattern: '',
+            interpretation: ''
         };
 
         let patientData = {};
         let agniData = {};
+
+        // Debounced save function
+        let saveTimeout;
+        const debouncedSave = () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveDoshaData();
+                showAutoSaveIndicator();
+            }, 500);
+        };
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -500,9 +553,8 @@
             injectDoshaSeverityButtons();
             loadPreviousDoshaData();
             updateDisplay();
-            showAutoSaveIndicator();
             
-            console.log('⚖️ Fixed Dosha Dusti Assessment System loaded successfully');
+            console.log('⚖️ Enhanced Dosha Dusti Assessment System loaded successfully');
         });
 
         function loadPreviousData() {
@@ -730,3 +782,243 @@
         function updateResults() {
             const vScore = doshaData.vata || 0;
             const pScore = doshaData.pitta || 0;
+            const kScore = doshaData.kapha || 0;
+            
+            const resultsDiv = document.getElementById('dosha-results');
+            
+            if (vScore === 0 && pScore === 0 && kScore === 0) {
+                resultsDiv.innerHTML = 'Please complete all parameters to view results...';
+                return;
+            }
+
+            // Calculate dominant dosha
+            const maxScore = Math.max(vScore, pScore, kScore);
+            let dominantDoshas = [];
+            
+            if (vScore === maxScore) dominantDoshas.push('Vata');
+            if (pScore === maxScore) dominantDoshas.push('Pitta');
+            if (kScore === maxScore) dominantDoshas.push('Kapha');
+
+            let dominantText = '';
+            if (dominantDoshas.length === 1) {
+                dominantText = dominantDoshas[0];
+            } else if (dominantDoshas.length === 2) {
+                dominantText = dominantDoshas.join('-');
+            } else {
+                dominantText = 'Tridoshic';
+            }
+
+            // Store dominant pattern
+            doshaData.dominantDosha = dominantText;
+            doshaData.dominantPattern = `${dominantText} Predominant (${maxScore} points)`;
+
+            // Generate severity indicators
+            const getSeverityClass = (score) => {
+                if (score === 0) return 'severity-normal';
+                if (score <= 6) return 'severity-mild';
+                if (score <= 12) return 'severity-moderate';
+                return 'severity-severe';
+            };
+
+            const getSeverityText = (score) => {
+                if (score === 0) return 'Normal';
+                if (score <= 6) return 'Mild';
+                if (score <= 12) return 'Moderate';
+                return 'Severe';
+            };
+
+            // Generate detailed interpretation
+            let interpretation = generateDoshaInterpretation(vScore, pScore, kScore);
+            doshaData.interpretation = interpretation;
+
+            resultsDiv.innerHTML = `
+                <div class="dominant-dosha">
+                    🏆 Dominant Pattern: ${doshaData.dominantPattern}
+                </div>
+                
+                <div class="dosha-interpretation">
+                    <h5>📋 Score Breakdown:</h5>
+                    <p><strong>Vata Duṣṭi:</strong> ${vScore}/20 
+                       <span class="severity-indicator ${getSeverityClass(vScore)}">${getSeverityText(vScore)}</span></p>
+                    <p><strong>Pitta Duṣṭi:</strong> ${pScore}/20 
+                       <span class="severity-indicator ${getSeverityClass(pScore)}">${getSeverityText(pScore)}</span></p>
+                    <p><strong>Kapha Duṣṭi:</strong> ${kScore}/20 
+                       <span class="severity-indicator ${getSeverityClass(kScore)}">${getSeverityText(kScore)}</span></p>
+                </div>
+
+                <div class="dosha-interpretation">
+                    <h5>🔍 Clinical Interpretation:</h5>
+                    ${interpretation}
+                </div>
+
+                ${generateRecommendations(vScore, pScore, kScore)}
+            `;
+        }
+
+        function generateDoshaInterpretation(vata, pitta, kapha) {
+            let interpretation = '<p>';
+            
+            if (vata === 0 && pitta === 0 && kapha === 0) {
+                interpretation += 'All doshas appear to be in balanced state (Sama Avastha). This indicates optimal constitutional harmony.';
+            } else {
+                const total = vata + pitta + kapha;
+                const vataPct = Math.round((vata/total) * 100);
+                const pittaPct = Math.round((pitta/total) * 100);
+                const kaphaPct = Math.round((kapha/total) * 100);
+
+                interpretation += `Based on classical lakṣaṇas, the assessment reveals:<br><br>`;
+                
+                if (vata > 0) {
+                    interpretation += `<strong>Vata Duṣṭi (${vataPct}%):</strong> `;
+                    if (vata <= 6) interpretation += 'Mild vata imbalance with subtle symptoms. ';
+                    else if (vata <= 12) interpretation += 'Moderate vata vitiation requiring attention. ';
+                    else interpretation += 'Significant vata prakopa needing immediate intervention. ';
+                }
+
+                if (pitta > 0) {
+                    interpretation += `<strong>Pitta Duṣṭi (${pittaPct}%):</strong> `;
+                    if (pitta <= 6) interpretation += 'Mild pitta imbalance with early manifestations. ';
+                    else if (pitta <= 12) interpretation += 'Moderate pitta vitiation with clear symptoms. ';
+                    else interpretation += 'Severe pitta prakopa requiring urgent management. ';
+                }
+
+                if (kapha > 0) {
+                    interpretation += `<strong>Kapha Duṣṭi (${kaphaPct}%):</strong> `;
+                    if (kapha <= 6) interpretation += 'Mild kapha imbalance with initial signs. ';
+                    else if (kapha <= 12) interpretation += 'Moderate kapha vitiation with established symptoms. ';
+                    else interpretation += 'Severe kapha prakopa needing comprehensive treatment. ';
+                }
+            }
+            
+            interpretation += '</p>';
+            return interpretation;
+        }
+
+        function generateRecommendations(vata, pitta, kapha) {
+            if (vata === 0 && pitta === 0 && kapha === 0) {
+                return `
+                    <div class="recommendation-section">
+                        <h5>💡 Recommendations:</h5>
+                        <p><strong>Maintenance Protocol:</strong> Continue current lifestyle practices. Focus on preventive measures and seasonal regimens (Ṛtucarya) to maintain dosha balance.</p>
+                    </div>
+                `;
+            }
+
+            let recommendations = '<div class="recommendation-section"><h5>💡 Treatment Recommendations:</h5>';
+            
+            if (vata > pitta && vata > kapha) {
+                recommendations += `
+                    <p><strong>Primary Focus - Vata Śamana:</strong></p>
+                    <ul>
+                        <li>Sneha (oleation therapy) - Internal and external</li>
+                        <li>Sveda (sudation) - Gentle warming therapies</li>
+                        <li>Basti (medicated enemas) - Primary treatment for vata</li>
+                        <li>Regular routine, warm foods, adequate rest</li>
+                    </ul>
+                `;
+            } else if (pitta > vata && pitta > kapha) {
+                recommendations += `
+                    <p><strong>Primary Focus - Pitta Śamana:</strong></p>
+                    <ul>
+                        <li>Śīta (cooling therapies) - Avoid excessive heat</li>
+                        <li>Virecana (therapeutic purgation) when indicated</li>
+                        <li>Rakta mokṣaṇa (bloodletting) if appropriate</li>
+                        <li>Cool, bitter, and sweet foods</li>
+                    </ul>
+                `;
+            } else if (kapha > vata && kapha > pitta) {
+                recommendations += `
+                    <p><strong>Primary Focus - Kapha Śamana:</strong></p>
+                    <ul>
+                        <li>Laṅghana (fasting/lightening therapies)</li>
+                        <li>Vamana (therapeutic emesis) when appropriate</li>
+                        <li>Uṣṇa and Tīkṣṇa (heating and sharp therapies)</li>
+                        <li>Light, warm, spicy foods with exercise</li>
+                    </ul>
+                `;
+            }
+            
+            recommendations += '</div>';
+            return recommendations;
+        }
+
+        function checkCompletion() {
+            // Check if all parameters have been assessed
+            const totalParameters = 10;
+            const assessedParameters = Object.keys(doshaData.selections).length;
+            
+            const completeBtn = document.getElementById('dosha-complete-btn');
+            
+            if (assessedParameters >= totalParameters) {
+                doshaData.completed = true;
+                doshaData.timestamp = new Date().toISOString();
+                completeBtn.disabled = false;
+                completeBtn.textContent = 'Complete Assessment → Dhatu';
+            } else {
+                doshaData.completed = false;
+                completeBtn.disabled = true;
+                completeBtn.textContent = `Complete All Parameters (${assessedParameters}/${totalParameters})`;
+            }
+        }
+
+        function saveDoshaData() {
+            try {
+                // Save individual dosha data
+                localStorage.setItem('4pcam_dosha_data', JSON.stringify(doshaData));
+                
+                // Update combined data
+                const combined = JSON.parse(localStorage.getItem('4pcam_combined_data') || '{}');
+                combined.dosha = doshaData;
+                localStorage.setItem('4pcam_combined_data', JSON.stringify(combined));
+                
+                console.log('✅ Dosha data saved successfully');
+                return true;
+            } catch (error) {
+                console.error('❌ Failed to save dosha data:', error);
+                return false;
+            }
+        }
+
+        function showAutoSaveIndicator() {
+            const indicator = document.getElementById('auto-save-indicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function completeDoshaAssessment() {
+            if (!doshaData.completed) {
+                alert('Please complete all parameters before proceeding.');
+                return;
+            }
+
+            // Final save
+            if (saveDoshaData()) {
+                alert(`✅ Dosha Assessment Completed!\n\nDominant Pattern: ${doshaData.dominantPattern}\n\nProceeding to Dhatu Assessment...`);
+                
+                // Navigate to dhatu assessment
+                window.location.href = 'dhatu-dusti.html';
+            } else {
+                alert('❌ Error saving data. Please try again.');
+            }
+        }
+
+        // Export function for external access
+        window.getDoshaData = function() {
+            return doshaData;
+        };
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveDoshaData();
+                showAutoSaveIndicator();
+            }
+        });
+
+        console.log('⚖️ Enhanced Dosha Assessment System Ready');
+    </script>
+</body>
+</html>
