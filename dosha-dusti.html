@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosha Dusti Assessment - 4-PCAM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .assessment-header {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .assessment-header h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            background: #e8f4fd;
+            color: #2d3436;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #74b9ff;
+            font-weight: 500;
+        }
+
+        .patient-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .progress-tracker {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .progress-tracker h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .progress-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            border: 2px solid transparent;
+        }
+
+        .progress-current {
+            border-color: #ffc107;
+            font-weight: bold;
+        }
+
+        .progress-completed {
+            background: #d4edda;
+            border-color: #00b894;
+        }
+
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .assessment-table th {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .assessment-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .assessment-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .parameter-cell {
+            background: #e3f2fd !important;
+            font-weight: 600;
+            text-align: left !important;
+            min-width: 150px;
+        }
+
+        .clickable-cell {
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+            margin: 2px;
+            padding: 10px !important;
+        }
+
+        .clickable-cell.selected {
+            border: 3px solid #667eea;
+            background: #e3f2fd !important;
+            font-weight: bold;
+            transform: scale(1.02);
+        }
+
+        .vata-cell { background: #f3e5f5; }
+        .pitta-cell { background: #ffecb3; }
+        .kapha-cell { background: #e8f5e8; }
+        .nad-cell { background: #f0f0f0; }
+
+        .dosha-severity-controls {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .dosha-severity-btn {
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 36px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .dosha-severity-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .dosha-severity-btn.severity-selected {
+            outline: 3px solid rgba(102,126,234,0.25);
+            opacity: 1 !important;
+        }
+
+        .score-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .score-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .score-card h4 {
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .score-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .results-section {
+            background: #f1f2f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+        }
+
+        .results-section h4 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            color: white;
+        }
+
+        .btn:disabled {
+            background: #ddd;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #00b894;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .score-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .patient-info {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auto-save-indicator" id="auto-save-indicator">💾 Auto-saved</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ DOSHA DUSTI ASSESSMENT</h1>
+            <p><strong>PILLAR 2 of 4-PCAM</strong></p>
+            <p>Constitutional Assessment Based on Classical Lakṣaṇas</p>
+        </div>
+
+        <div class="content">
+            <div class="patient-info" id="patient-info">
+                <!-- Patient info will be loaded here -->
+            </div>
+
+            <div class="progress-tracker">
+                <h4>📊 4-PCAM Assessment Progress</h4>
+                <div class="progress-grid">
+                    <div class="progress-item progress-completed">✓ Patient Info</div>
+                    <div class="progress-item progress-completed">✓ Agni Assessment</div>
+                    <div class="progress-item progress-current">⚖️ Dosha Assessment</div>
+                    <div class="progress-item">🧬 Dhatu Assessment</div>
+                    <div class="progress-item">🌊 Srotas Assessment</div>
+                </div>
+            </div>
+
+            <div class="assessment-header">
+                <h3>⚖️ PILLAR 2: DOSHA DUSTI ASSESSMENT</h3>
+                <p>Based on Classical Lakṣaṇas – Caraka, Suśruta, Vāgbhaṭa</p>
+            </div>
+
+            <div class="instructions">
+                <strong>📋 SCORING INSTRUCTIONS:</strong> Score 0–2 per parameter (0 = Normal, 1 = Mild, 2 = Marked Abnormality). Max 20 points per dosha. Click the severity buttons (1 or 2) for each symptom present, or select NAD (0) if normal. The assessment will auto-save your progress.
+            </div>
+
+            <table class="assessment-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Vata Duṣṭi</th>
+                        <th>Pitta Duṣṭi</th>
+                        <th>Kapha Duṣṭi</th>
+                        <th>NAD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="parameter-cell">1. Agni</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="agni">Irregular, variable</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="agni">Very sharp, frequent hunger</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="agni">Poor appetite, slow digestion</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="agni">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">2. Mala</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="mala">Constipation, dry, scanty</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="mala">Loose, yellowish, burning</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="mala">Sticky, mucus-laden, sluggish</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="mala">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">3. Mutra</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="mutra">Scanty, frequent, obstructed</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="mutra">Yellow, burning</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="mutra">Increased, cloudy</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="mutra">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">4. Sveda</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="sveda">Dry skin, no sweat</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="sveda">Excessive sweating, odor</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="sveda">Cold, little sweat</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="sveda">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">5. Sparsha</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="sparsha">Rough, dry, cold skin</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="sparsha">Burning, warm, red skin</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="sparsha">Thick, oily, cold skin</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="sparsha">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">6. Bāla/Ojas</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="bala">Weakness, low endurance</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="bala">Moderate stamina, irritability</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="bala">Heavy, lazy, dull</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="bala">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">7. Manasika Bhava</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="manasika">Anxiety, worry, fear</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="manasika">Anger, short-tempered</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="manasika">Dullness, depression, inertia</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="manasika">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">8. Gati/Bhrama</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="gati">Fast, jerky, tremors</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="gati">Sudden shifts, burning</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="gati">Sluggish, slow, heaviness</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="gati">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">9. Roopam (External)</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="roopam">Thin, dry, cracked</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="roopam">Red, inflamed, acne</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="roopam">Puffy, moist, oily</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="roopam">Normal</td>
+                    </tr>
+                    <tr>
+                        <td class="parameter-cell">10. Jihva (Tongue)</td>
+                        <td class="clickable-cell vata-cell" data-dosha="vata" data-parameter="jihva">Dry, rough, blackish</td>
+                        <td class="clickable-cell pitta-cell" data-dosha="pitta" data-parameter="jihva">Red, yellow coat</td>
+                        <td class="clickable-cell kapha-cell" data-dosha="kapha" data-parameter="jihva">Thick, white coat</td>
+                        <td class="clickable-cell nad-cell" data-dosha="nad" data-parameter="jihva">Normal</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="score-summary">
+                <div class="score-card">
+                    <h4>Vata Score</h4>
+                    <div class="score-value" id="vata-score">0</div>
+                </div>
+                <div class="score-card">
+                    <h4>Pitta Score</h4>
+                    <div class="score-value" id="pitta-score">0</div>
+                </div>
+                <div class="score-card">
+                    <h4>Kapha Score</h4>
+                    <div class="score-value" id="kapha-score">0</div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h4>📊 Dosha Assessment Results</h4>
+                <div id="dosha-results">Please complete all parameters to view results...</div>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="agni-dusti.html" class="btn btn-secondary">← Back to Agni Assessment</a>
+                <button class="btn btn-primary" id="dosha-complete-btn" onclick="completeDoshaAssessment()" disabled>Complete Assessment → Dhatu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dosha assessment data - Fixed structure
+        let doshaData = {
+            vata: 0,
+            pitta: 0,
+            kapha: 0,
+            selections: {},
+            completed: false,
+            timestamp: null
+        };
+
+        let patientData = {};
+        let agniData = {};
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPreviousData();
+            injectDoshaSeverityButtons();
+            loadPreviousDoshaData();
+            updateDisplay();
+            showAutoSaveIndicator();
+            
+            console.log('⚖️ Fixed Dosha Dusti Assessment System loaded successfully');
+        });
+
+        function loadPreviousData() {
+            // Load combined data with correct keys
+            const combined = localStorage.getItem('4pcam_combined_data');
+            if (combined) {
+                try {
+                    const data = JSON.parse(combined);
+                    patientData = data.patient || {};
+                    agniData = data.agni || {};
+                    displayPatientInfo();
+                } catch (e) {
+                    console.log('Could not load combined data:', e);
+                }
+            }
+
+            // Validate prerequisites
+            if (!patientData.name || !agniData.completed) {
+                alert('Please complete Patient Information and Agni Assessment first.');
+                window.location.href = 'index.html';
+                return;
+            }
+        }
+
+        function displayPatientInfo() {
+            const infoEl = document.getElementById('patient-info');
+            if (patientData.name) {
+                const agniStatus = getAgniStatusFromData();
+                
+                infoEl.innerHTML = `
+                    <div><strong>Patient:</strong> ${patientData.name}</div>
+                    <div><strong>Age/Sex:</strong> ${patientData.ageSex}</div>
+                    <div><strong>Date:</strong> ${patientData.assessmentDate || 'Not specified'}</div>
+                    <div><strong>Chief Complaints:</strong> ${patientData.complaints.length > 60 ? 
+                        patientData.complaints.substring(0, 60) + '...' : patientData.complaints}</div>
+                    <div><strong>Agni Status:</strong> ${agniStatus}</div>
+                    ${patientData.patientId ? `<div><strong>ID:</strong> ${patientData.patientId}</div>` : ''}
+                `;
+            }
+        }
+
+        function getAgniStatusFromData() {
+            if (!agniData.completed) return 'Not completed';
+            
+            // Use stored dominant pattern if available
+            if (agniData.dominantPatternDisplay) {
+                return agniData.dominantPatternDisplay;
+            }
+            
+            // Fallback: calculate dominant pattern
+            let dominantType = '';
+            let maxScore = 0;
+            ['vishama', 'tikshna', 'manda', 'sama'].forEach(type => {
+                if ((agniData[type] || 0) > maxScore) {
+                    maxScore = agniData[type] || 0;
+                    dominantType = type;
+                }
+            });
+
+            const patternNames = {
+                vishama: 'Viṣama Agni',
+                tikshna: 'Tīkṣṇa Agni', 
+                manda: 'Manda Agni',
+                sama: 'Sama Agni'
+            };
+
+            return maxScore > 0 ? patternNames[dominantType] : 'Assessment completed';
+        }
+
+        function injectDoshaSeverityButtons() {
+            const doshaCells = document.querySelectorAll('[data-dosha]');
+            doshaCells.forEach(td => {
+                if (td.querySelector('.dosha-severity-controls')) return;
+                
+                const controls = document.createElement('div');
+                controls.className = 'dosha-severity-controls';
+
+                if (td.dataset.dosha === 'nad') {
+                    // NAD column - only 0 button
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'dosha-severity-btn';
+                    btn.dataset.score = '0';
+                    btn.textContent = '0';
+                    btn.style.background = '#a8e6a3';
+                    btn.style.color = '#333';
+                    btn.title = '0 - Normal/No abnormality detected';
+                    btn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        handleDoshaSeverityClick(td, btn);
+                    });
+                    controls.appendChild(btn);
+                } else {
+                    // Vata/Pitta/Kapha columns - 1 and 2 buttons
+                    [1, 2].forEach(scoreVal => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'dosha-severity-btn';
+                        btn.dataset.score = String(scoreVal);
+                        btn.textContent = String(scoreVal);
+
+                        if (scoreVal === 1) {
+                            btn.style.background = '#fde68a';
+                            btn.style.color = '#333';
+                            btn.title = '1 - Mild abnormality';
+                        } else if (scoreVal === 2) {
+                            btn.style.background = '#ff8a80';
+                            btn.style.color = '#333';
+                            btn.title = '2 - Marked abnormality';
+                        }
+
+                        btn.addEventListener('click', e => {
+                            e.stopPropagation();
+                            handleDoshaSeverityClick(td, btn);
+                        });
+
+                        controls.appendChild(btn);
+                    });
+                }
+
+                td.appendChild(controls);
+                td.style.paddingBottom = '14px';
+            });
+        }
+
+        function handleDoshaSeverityClick(tdCell, btn) {
+            const dosha = tdCell.getAttribute('data-dosha');
+            const parameter = tdCell.getAttribute('data-parameter');
+            const score = parseInt(btn.dataset.score);
+
+            if (!dosha || !parameter || isNaN(score)) return;
+
+            // Clear previous selection for this parameter across all doshas
+            const allCellsForParameter = document.querySelectorAll(`[data-parameter="${parameter}"]`);
+            allCellsForParameter.forEach(cell => {
+                cell.classList.remove('selected');
+                cell.querySelectorAll('.dosha-severity-btn').forEach(b => {
+                    b.classList.remove('severity-selected');
+                    b.style.outline = 'none';
+                    b.style.opacity = '0.9';
+                });
+            });
+
+            // Remove previous scores for this parameter
+            Object.keys(doshaData.selections).forEach(key => {
+                if (key.endsWith(`_${parameter}`)) {
+                    const prevDosha = key.split('_')[1];
+                    const prevScore = parseInt(doshaData.selections[key]);
+                    if (!isNaN(prevScore) && prevDosha !== 'nad') {
+                        doshaData[prevDosha] = Math.max(0, (doshaData[prevDosha] || 0) - prevScore);
+                    }
+                    delete doshaData.selections[key];
+                }
+            });
+
+            // Set new selection
+            btn.classList.add('severity-selected');
+            btn.style.outline = '3px solid rgba(102,126,234,0.25)';
+            btn.style.opacity = '1';
+            tdCell.classList.add('selected');
+
+            // Store new selection
+            const selectionKey = `dosha_${dosha}_${parameter}`;
+            doshaData.selections[selectionKey] = score;
+
+            // Update dosha score (only if not NAD)
+            if (dosha !== 'nad') {
+                doshaData[dosha] = (doshaData[dosha] || 0) + score;
+            }
+
+            // Update displays
+            updateDisplay();
+            debouncedSave();
+        }
+
+        function loadPreviousDoshaData() {
+            const saved = localStorage.getItem('4pcam_dosha_data');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    doshaData = { ...doshaData, ...data };
+                    restoreSelections();
+                    console.log('✅ Previous dosha data loaded');
+                } catch (e) {
+                    console.log('Could not load previous dosha data:', e);
+                }
+            }
+        }
+
+        function restoreSelections() {
+            Object.keys(doshaData.selections).forEach(key => {
+                const parts = key.split('_');
+                if (parts.length >= 3) {
+                    const dosha = parts[1];
+                    const parameter = parts.slice(2).join('_');
+                    const score = doshaData.selections[key];
+
+                    const td = document.querySelector(`[data-dosha="${dosha}"][data-parameter="${parameter}"]`);
+                    if (td) {
+                        const btn = td.querySelector(`.dosha-severity-btn[data-score="${score}"]`);
+                        if (btn) {
+                            td.classList.add('selected');
+                            btn.classList.add('severity-selected');
+                            btn.style.outline = '3px solid rgba(102,126,234,0.25)';
+                            btn.style.opacity = '1';
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDisplay() {
+            // Update score cards
+            document.getElementById('vata-score').textContent = doshaData.vata || 0;
+            document.getElementById('pitta-score').textContent = doshaData.pitta || 0;
+            document.getElementById('kapha-score').textContent = doshaData.kapha || 0;
+
+            // Update results
+            updateResults();
+
+            // Check completion
+            checkCompletion();
+        }
+
+        function updateResults() {
+            const vScore = doshaData.vata || 0;
+            const pScore = doshaData.pitta || 0;
