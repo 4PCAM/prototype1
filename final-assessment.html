@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Assessment Report - 4-PCAM</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .report-header h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .patient-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid #74b9ff;
+        }
+
+        .patient-summary h4 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .assessment-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .pillar-section {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .pillar-header {
+            padding: 20px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+        }
+
+        .pillar-1 { background: linear-gradient(135deg, #ff7675, #d63031); }
+        .pillar-2 { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .pillar-3 { background: linear-gradient(135deg, #a8e6a3, #00b894); }
+        .pillar-4 { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
+
+        .pillar-content {
+            padding: 25px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .score-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .score-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #2d3436;
+            margin-top: 5px;
+        }
+
+        .symptoms-section {
+            margin-top: 20px;
+            background: #f1f2f6;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .symptoms-section h5 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .symptom-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .symptom-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+            font-size: 13px;
+        }
+
+        .normal { background: #00b894; color: white; }
+        .mild { background: #fdcb6e; color: #2d3436; }
+        .moderate { background: #e17055; color: white; }
+        .severe { background: #d63031; color: white; }
+
+        .clinical-summary {
+            background: #e8f4fd;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #74b9ff;
+        }
+
+        .clinical-summary h4 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .summary-card h5 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .recommendations {
+            background: #d4edda;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #00b894;
+        }
+
+        .recommendations h4 {
+            color: #155724;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendation-item {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #00b894;
+            font-size: 14px;
+        }
+
+        .actions-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff7675, #d63031);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: #2d3436;
+        }
+
+        .error-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .error-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .missing-data-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: none;
+            }
+            
+            .actions-section {
+                display: none;
+            }
+            
+            .pillar-section {
+                break-inside: avoid;
+                margin-bottom: 20px;
+            }
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .assessment-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .patient-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <h3>Generating PDF Report...</h3>
+            <p>Please wait while we create your comprehensive assessment report.</p>
+        </div>
+    </div>
+
+    <div class="container" id="report-container">
+        <div class="header">
+            <h1>📋 COMPREHENSIVE ASSESSMENT REPORT</h1>
+            <p><strong>4-Pillar Clinical Assessment Model (4-PCAM)</strong></p>
+            <p><strong>Developer:</strong> Dr. Smitrajsinh Jadeja, Dr. Anirudh Bhatt, Dr. Yogesh Valaki, Dr. Diksha Kanani</p>
+            <p><strong>Guided By:</strong> Dr. Prakash Kumbar</p>
+        </div>
+
+        <div class="content">
+            <div class="report-header">
+                <h3>📊 FINAL ASSESSMENT REPORT</h3>
+                <p>Complete 4-Pillar Ayurvedic Clinical Assessment</p>
+                <div id="report-date"></div>
+            </div>
+
+            <div id="error-container"></div>
+
+            <div class="patient-summary">
+                <h4>👤 Patient Information</h4>
+                <div class="patient-grid" id="patient-info">
+                    <!-- Patient info will be loaded here -->
+                </div>
+            </div>
+
+            <div class="assessment-sections">
+                <!-- PILLAR 1: AGNI -->
+                <div class="pillar-section">
+                    <div class="pillar-header pillar-1">
+                        <h4>🔥 PILLAR 1: AGNI DUSTI ASSESSMENT</h4>
+                    </div>
+                    <div class="pillar-content">
+                        <div class="score-grid" id="agni-scores">
+                            <!-- Agni scores will be loaded here -->
+                        </div>
+                        <div id="agni-assessment">
+                            <!-- Agni assessment results will be loaded here -->
+                        </div>
+                        <div class="symptoms-section" id="agni-symptoms">
+                            <h5>🔍 Selected Agni Symptoms</h5>
+                            <div class="symptom-tags" id="agni-symptom-tags">
+                                <!-- Agni symptoms will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PILLAR 2: DOSHA -->
+                <div class="pillar-section">
+                    <div class="pillar-header pillar-2">
+                        <h4>⚖️ PILLAR 2: DOSHA DUSTI ASSESSMENT</h4>
+                    </div>
+                    <div class="pillar-content">
+                        <div class="score-grid" id="dosha-scores">
+                            <!-- Dosha scores will be loaded here -->
+                        </div>
+                        <div id="dosha-assessment">
+                            <!-- Dosha assessment results will be loaded here -->
+                        </div>
+                        <div class="symptoms-section" id="dosha-symptoms">
+                            <h5>🔍 Selected Dosha Symptoms</h5>
+                            <div id="dosha-symptom-details">
+                                <!-- Dosha symptoms will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PILLAR 3: DHATU -->
+                <div class="pillar-section">
+                    <div class="pillar-header pillar-3">
+                        <h4>🧬 PILLAR 3: DHATU DUSTI ASSESSMENT</h4>
+                    </div>
+                    <div class="pillar-content">
+                        <div id="dhatu-assessment">
+                            <!-- Dhatu assessment results will be loaded here -->
+                        </div>
+                        <div class="symptoms-section" id="dhatu-symptoms">
+                            <h5>🔍 Selected Dhatu Symptoms</h5>
+                            <div id="dhatu-symptom-details">
+                                <!-- Dhatu symptoms will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PILLAR 4: SROTAS -->
+                <div class="pillar-section">
+                    <div class="pillar-header pillar-4">
+                        <h4>🌊 PILLAR 4: SROTO DUSTI ASSESSMENT</h4>
+                    </div>
+                    <div class="pillar-content">
+                        <div id="srotas-assessment">
+                            <!-- Srotas assessment results will be loaded here -->
+                        </div>
+                        <div class="symptoms-section" id="srotas-symptoms">
+                            <h5>🔍 Selected Srotas Symptoms</h5>
+                            <div id="srotas-symptom-details">
+                                <!-- Srotas symptoms will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clinical-summary">
+                <h4>🏥 Clinical Summary & Analysis</h4>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h5>🔥 Agni Status</h5>
+                        <div id="agni-summary">
+                            <!-- Agni summary will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <h5>⚖️ Dosha Dominance</h5>
+                        <div id="dosha-summary">
+                            <!-- Dosha summary will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <h5>🧬 Dhatu Involvement</h5>
+                        <div id="dhatu-summary">
+                            <!-- Dhatu summary will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <h5>🌊 Srotas Dysfunction</h5>
+                        <div id="srotas-summary">
+                            <!-- Srotas summary will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations">
+                <h4>💡 Clinical Recommendations</h4>
+                <ul class="recommendation-list" id="recommendations-list">
+                    <!-- Recommendations will be generated here -->
+                </ul>
+            </div>
+
+            <div class="actions-section">
+                <button class="btn btn-primary" onclick="exportToPDF()">📄 Export as PDF</button>
+                <button class="btn btn-warning" onclick="printReport()">🖨️ Print Report</button>
+                <button class="btn btn-secondary" onclick="saveReport()">💾 Save Data</button>
+                <button class="btn btn-danger" onclick="resetAllData()">🔄 Reset All</button>
+                <a href="index.html" class="btn btn-secondary">← New Assessment</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let combinedData = {};
+        let hasErrors = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAssessmentData();
+            generateReport();
+        });
+
+        function loadAssessmentData() {
+            try {
+                // Try to load combined data first
+                const savedCombined = localStorage.getItem('4pcam_combined_data');
+                if (savedCombined) {
+                    combinedData = JSON.parse(savedCombined);
+                } else {
+                    // If no combined data, try to load individual assessments
+                    combinedData = {
+                        patient: getStoredData('4pcam_patient_data'),
+                        agni: getStoredData('4pcam_agni_data'),
+                        dosha: getStoredData('4pcam_dosha_data'),
+                        dhatu: getStoredData('4pcam_dhatu_data'),
+                        srotas: getStoredData('4pcam_srotas_data')
+                    };
+                }
+
+                // Validate data integrity
+                validateAssessmentData();
+                
+            } catch (e) {
+                console.error('Error loading assessment data:', e);
+                showError('Error loading assessment data. Data may be corrupted.');
+                hasErrors = true;
+            }
+        }
+
+        function getStoredData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                console.error(`Error parsing ${key}:`, e);
+                return null;
+            }
+        }
+
+        function validateAssessmentData() {
+            const missingData = [];
+            
+            if (!combinedData.patient) missingData.push('Patient Information');
+            if (!combinedData.agni) missingData.push('Agni Assessment');
+            if (!combinedData.dosha) missingData.push('Dosha Assessment');
+            if (!combinedData.dhatu) missingData.push('Dhatu Assessment');
+            if (!combinedData.srotas) missingData.push('Srotas Assessment');
+
+            if (missingData.length > 0) {
+                showError('Incomplete Assessment Data', missingData);
+                hasErrors = true;
+            }
+        }
+
+        function showError(title, missingData = []) {
+            const errorContainer = document.getElementById('error-container');
+            let errorHTML = `
+                <div class="error-section">
+                    <h3>⚠️ ${title}</h3>
+                    <p>The following assessments are missing or incomplete:</p>
+            `;
+
+            if (missingData.length > 0) {
+                errorHTML += '<div class="missing-data-info">';
+                missingData.forEach(item => {
+                    errorHTML += `<p>• ${item}</p>`;
+                });
+                errorHTML += '</div>';
+                errorHTML += `
+                    <p><strong>Please complete all 4 pillars before viewing the final report.</strong></p>
+                    <a href="index.html" class="btn btn-primary" style="margin-top: 15px;">← Return to Assessment</a>
+                `;
+            }
+
+            errorHTML += '</div>';
+            errorContainer.innerHTML = errorHTML;
+        }
+
+        function generateReport() {
+            if (hasErrors) {
+                // Hide main content if there are errors
+                document.querySelector('.patient-summary').style.display = 'none';
+                document.querySelector('.assessment-sections').style.display = 'none';
+                document.querySelector('.clinical-summary').style.display = 'none';
+                document.querySelector('.recommendations').style.display = 'none';
+                document.querySelector('.actions-section').style.display = 'none';
+                return;
+            }
+
+            // Set report date
+            const now = new Date();
+            document.getElementById('report-date').innerHTML = `
+                <p><strong>Report Generated:</strong> ${now.toLocaleDateString()} ${now.toLocaleTimeString()}</p>
+            `;
+
+            // Load patient information
+            loadPatientInfo();
+
+            // Load each pillar assessment
+            loadAgniAssessment();
+            loadDoshaAssessment();
+            loadDhatuAssessment();
+            loadSrotasAssessment();
+
+            // Generate clinical summary
+            generateClinicalSummary();
+
+            // Generate recommendations
+            generateRecommendations();
+        }
+
+        function loadPatientInfo() {
+            const patient = combinedData.patient || {};
+            const infoEl = document.getElementById('patient-info');
+            
+            infoEl.innerHTML = `
+                <div><strong>Name:</strong> ${patient.name || 'N/A'}</div>
+                <div><strong>Age/Sex:</strong> ${patient.age || 'N/A'}/${patient.gender || 'N/A'}</div>
+                <div><strong>Patient ID:</strong> ${patient.patientId || generatePatientId()}</div>
+                <div><strong>Date of Assessment:</strong> ${patient.assessmentDate || new Date().toLocaleDateString()}</div>
+                <div><strong>Referred By:</strong> ${patient.referredBy || 'Self'}</div>
+                <div><strong>Contact:</strong> ${patient.contact || 'N/A'}</div>
+                <div style="grid-column: 1/-1;"><strong>Chief Complaints:</strong> ${patient.complaints || patient.chiefComplaints || 'Not specified'}</div>
+                <div style="grid-column: 1/-1;"><strong>Past History:</strong> ${patient.pastHistory || patient.medicalHistory || 'Not specified'}</div>
+                <div style="grid-column: 1/-1;"><strong>Additional Notes:</strong> ${patient.additionalPoints || patient.additionalNotes || 'None'}</div>
+            `;
+        }
+
+        function loadAgniAssessment() {
+            const agni = combinedData.agni || {};
+            const scoresEl = document.getElementById('agni-scores');
+            const assessmentEl = document.getElementById('agni-assessment');
+            const symptomsEl = document.getElementById('agni-symptom-tags');
+
+            // Load scores with fallback values
+            const vishama = agni.vishama || agni.scores?.vishama || 0;
+            const tikshna = agni.tikshna || agni.scores?.tikshna || 0;
+            const manda = agni.manda || agni.scores?.manda || 0;
+            const sama = agni.sama || agni.scores?.sama || 0;
+
+            scoresEl.innerHTML = `
+                <div class="score-card">
+                    <div class="score-value">${vishama}</div>
+                    <div class="score-label">Viṣama Agni</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${tikshna}</div>
+                    <div class="score-label">Tīkṣṇa Agni</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${manda}</div>
+                    <div class="score-label">Manda Agni</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${sama}</div>
+                    <div class="score-label">Sama Agni</div>
+                </div>
+            `;
+
+            // Calculate assessment
+            const totalDusti = vishama + tikshna + manda;
+            let severity, severityClass;
+
+            if (totalDusti === 0 && sama > 0) {
+                severity = 'SAMA AGNI (Balanced)';
+                severityClass = 'normal';
+            } else if (totalDusti <= 4) {
+                severity = 'MILD AGNI DUSTI';
+                severityClass = 'mild';
+            } else if (totalDusti <= 6) {
+                severity = 'MODERATE AGNI DUSTI';
+                severityClass = 'moderate';
+            } else {
+                severity = 'SEVERE AGNI DUSTI';
+                severityClass = 'severe';
+            }
+
+            assessmentEl.innerHTML = `
+                <p><strong>Total Dusti Score:</strong> ${totalDusti}/15</p>
+                <p><strong>Sama Agni Score:</strong> ${sama}/5</p>
+                <p><strong>Assessment:</strong> <span class="severity-indicator ${severityClass}">${severity}</span></p>
+                <p><strong>Dominant Type:</strong> ${getDominantAgniType(vishama, tikshna, manda, sama)}</p>
+            `;
+
+            // Load symptoms
+            loadAgniSymptoms(agni, symptomsEl);
+        }
+
+        function loadAgniSymptoms(agni, symptomsEl) {
+            const symptoms = agni.selectedSymptoms || agni.symptoms || {};
+            let symptomHTML = '';
+
+            if (Array.isArray(symptoms)) {
+                // Handle array format
+                symptomHTML = symptoms.map(s => 
+                    `<span class="symptom-tag">${s.parameter || s.category || 'General'}: ${s.symptom || s.text}</span>`
+                ).join('');
+            } else if (typeof symptoms === 'object') {
+                // Handle object format
+                Object.keys(symptoms).forEach(key => {
+                    const symptomList = symptoms[key];
+                    if (Array.isArray(symptomList)) {
+                        symptomList.forEach(s => {
+                            symptomHTML += `<span class="symptom-tag">${key}: ${s.symptom || s.text || s}</span>`;
+                        });
+                    } else if (typeof symptomList === 'object') {
+                        symptomHTML += `<span class="symptom-tag">${key}: ${symptomList.symptom || symptomList.text || symptomList}</span>`;
+                    }
+                });
+            }
+
+            symptomsEl.innerHTML = symptomHTML || '<span class="symptom-tag">No specific symptoms recorded</span>';
+        }
+
+        function loadDoshaAssessment() {
+            const dosha = combinedData.dosha || {};
+            const scoresEl = document.getElementById('dosha-scores');
+            const assessmentEl = document.getElementById('dosha-assessment');
+            const symptomsEl = document.getElementById('dosha-symptom-details');
+
+            // Load scores with multiple fallback patterns
+            const vataScore = dosha.vata || dosha.scores?.vata || dosha.vataScore || 0;
+            const pittaScore = dosha.pitta || dosha.scores?.pitta || dosha.pittaScore || 0;
+            const kaphaScore = dosha.kapha || dosha.scores?.kapha || dosha.kaphaScore || 0;
+
+            scoresEl.innerHTML = `
+                <div class="score-card">
+                    <div class="score-value">${vataScore}</div>
+                    <div class="score-label">Vata Dushti</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${pittaScore}</div>
+                    <div class="score-label">Pitta Dushti</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-value">${kaphaScore}</div>
+                    <div class="score-label">Kapha Dushti</div>
+                </div>
+            `;
+
+            // Determine dominant dosha
+            const maxScore = Math.max(vataScore, pittaScore, kaphaScore);
+            let dominant = 'Balanced State';
+            
+            if (maxScore > 0) {
+                if (maxScore === vataScore) dominant = `Vata Dūṣṭi Dominant (${vataScore})`;
+                else if (maxScore === pittaScore) dominant = `Pitta Dūṣṭi Dominant (${pittaScore})`;
+                else if (maxScore === kaphaScore) dominant = `Kapha Dūṣṭi Dominant (${kaphaScore})`;
+            }
+
+            assessmentEl.innerHTML = `
+                <p><strong>Dominant Pattern:</strong> ${dominant}</p>
+                <p><strong>Total Score:</strong> ${vataScore + pittaScore + kaphaScore}</p>
+                <p><strong>Vata Status:</strong> <span class="severity-indicator ${getDoshaSeverityClass(vataScore)}">${getDoshaSeverityText(vataScore)}</span></p>
+                <p><strong>Pitta Status:</strong> <span class="severity-indicator ${getDoshaSeverityClass(pittaScore)}">${getDoshaSeverityText(pittaScore)}</span></p>
+                <p><strong>Kapha Status:</strong> <span class="severity-indicator ${getDoshaSeverityClass(kaphaScore)}">${getDoshaSeverityText(kaphaScore)}</span></p>
+            `;
+
+            // Load symptoms
+            loadDoshaSymptoms(dosha, symptomsEl);
+        }
+
+        function loadDoshaSymptoms(dosha, symptomsEl) {
+            const selectedSymptoms = dosha.selectedSymptoms || dosha.symptoms || {};
+            let symptomsHTML = '';
+            
+            if (Array.isArray(selectedSymptoms)) {
+                // Handle array format
+                const groupedSymptoms = {};
+                selectedSymptoms.forEach(symptom => {
+                    const doshaType = symptom.dosha || symptom.type || 'general';
+                    if (!groupedSymptoms[doshaType]) groupedSymptoms[doshaType] = [];
+                    groupedSymptoms[doshaType].push(symptom);
+                });
+                
+                Object.keys(groupedSymptoms).forEach(doshaType => {
+                    const symptoms = groupedSymptoms[doshaType];
+                    symptomsHTML += `
+                        <div style="margin-bottom: 15px;">
+                            <strong>${doshaType.charAt(0).toUpperCase() + doshaType.slice(1)} Symptoms:</strong>
+                            <div class="symptom-tags" style="margin-top: 8px;">
+                                ${symptoms.map(s => 
+                                    `<span class="symptom-tag">${s.parameter || s.category || ''}: ${s.symptom || s.text} ${s.severityText ? `(${s.severityText})` : ''}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else if (typeof selectedSymptoms === 'object') {
+                // Handle object format
+                Object.keys(selectedSymptoms).forEach(doshaType => {
+                    const symptoms = selectedSymptoms[doshaType] || [];
+                    if (Array.isArray(symptoms) && symptoms.length > 0) {
+                        symptomsHTML += `
+                            <div style="margin-bottom: 15px;">
+                                <strong>${doshaType.charAt(0).toUpperCase() + doshaType.slice(1)} Symptoms:</strong>
+                                <div class="symptom-tags" style="margin-top: 8px;">
+                                    ${symptoms.map(s => 
+                                        `<span class="symptom-tag">${s.parameter || s.category || ''}: ${s.symptom || s.text} ${s.severityText || s.severity ? `(${s.severityText || s.severity})` : ''}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            symptomsEl.innerHTML = symptomsHTML || '<p>No specific dosha symptoms recorded</p>';
+        }
+
+        function loadDhatuAssessment() {
+            const dhatu = combinedData.dhatu || {};
+            const assessmentEl = document.getElementById('dhatu-assessment');
+            const symptomsEl = document.getElementById('dhatu-symptom-details');
+
+            // Calculate overall dhatu scores
+            let totalKshaya = 0;
+            let totalVriddhi = 0;
+            let dhatuHTML = '<div class="score-grid">';
+
+            const dhatuNames = {
+                rasa: 'Rasa',
+                rakta: 'Rakta', 
+                mamsa: 'Mamsa',
+                meda: 'Meda',
+                asthi: 'Asthi',
+                majja: 'Majja',
+                shukra: 'Shukra'
+            };
+
+            const scores = dhatu.scores || dhatu.dhatuScores || {};
+            
+            Object.keys(dhatuNames).forEach(dhatuName => {
+                const dhatuScore = scores[dhatuName] || { kshaya: 0, vriddhi: 0 };
+                const kshaya = dhatuScore.kshaya || 0;
+                const vriddhi = dhatuScore.vriddhi || 0;
+                
+                totalKshaya += kshaya;
+                totalVriddhi += vriddhi;
+                
+                dhatuHTML += `
+                    <div class="score-card">
+                        <div class="score-value">${kshaya + vriddhi}</div>
+                        <div class="score-label">${dhatuNames[dhatuName]}<br><small>K:${kshaya} V:${vriddhi}</small></div>
+                    </div>
+                `;
+            });
+
+            dhatuHTML += '</div>';
+
+            const totalDhatuScore = totalKshaya + totalVriddhi;
+            let severity = 'normal';
+            let severityText = 'No significant dhatu dushti';
+            
+            if (totalDhatuScore >= 1 && totalDhatuScore <= 10) {
+                severity = 'mild';
+                severityText = 'Mild dhatu imbalance';
+            } else if (totalDhatuScore >= 11 && totalDhatuScore <= 20) {
+                severity = 'moderate';
+                severityText = 'Moderate dhatu dysfunction';
+            } else if (totalDhatuScore >= 21) {
+                severity = 'severe';
+                severityText = 'Severe dhatu pathology';
+            }
+
+            dhatuHTML += `
+                <p><strong>Total Dhatu Score:</strong> ${totalDhatuScore} (Kshaya: ${totalKshaya}, Vriddhi: ${totalVriddhi})</p>
+                <p><strong>Assessment:</strong> <span class="severity-indicator ${severity}">${severityText}</span></p>
+                <p><strong>Most Affected:</strong> ${getMostAffectedDhatu(scores)}</p>
+            `;
+
+            assessmentEl.innerHTML = dhatuHTML;
+
+            // Load symptoms
+            loadDhatuSymptoms(dhatu, symptomsEl);
+        }
+
+        function loadDhatuSymptoms(dhatu, symptomsEl) {
+            const selectedSymptoms = dhatu.selectedSymptoms || dhatu.symptoms || {};
+            let symptomsHTML = '';
+            
+            const dhatuNames = {
+                rasa: 'Rasa',
+                rakta: 'Rakta',
+                mamsa: 'Mamsa',
+                meda: 'Meda',
+                asthi: 'Asthi',
+                majja: 'Majja',
+                shukra: 'Shukra'
+            };
+
+            Object.keys(dhatuNames).forEach(dhatuName => {
+                const dhatuSymptoms = selectedSymptoms[dhatuName];
+                if (dhatuSymptoms) {
+                    const kshayaSymptoms = dhatuSymptoms.kshaya || [];
+                    const vriddhiSymptoms = dhatuSymptoms.vriddhi || [];
+                    
+                    if (kshayaSymptoms.length > 0 || vriddhiSymptoms.length > 0) {
+                        symptomsHTML += `
+                            <div style="margin-bottom: 15px;">
+                                <strong>${dhatuNames[dhatuName]} Dhatu:</strong>
+                                ${kshayaSymptoms.length > 0 ? `
+                                    <div style="margin-top: 5px;"><em>Kshaya (Depletion):</em></div>
+                                    <div class="symptom-tags" style="margin-top: 5px;">
+                                        ${kshayaSymptoms.map(s => `<span class="symptom-tag">${s.symptom || s.text} (${s.severity || 'mild'})</span>`).join('')}
+                                    </div>
+                                ` : ''}
+                                ${vriddhiSymptoms.length > 0 ? `
+                                    <div style="margin-top: 5px;"><em>Vriddhi (Excess):</em></div>
+                                    <div class="symptom-tags" style="margin-top: 5px;">
+                                        ${vriddhiSymptoms.map(s => `<span class="symptom-tag">${s.symptom || s.text} (${s.severity || 'mild'})</span>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                }
+            });
+
+            symptomsEl.innerHTML = symptomsHTML || '<p>No specific dhatu symptoms recorded</p>';
+        }
+
+        function loadSrotasAssessment() {
+            const srotas = combinedData.srotas || {};
+            const assessmentEl = document.getElementById('srotas-assessment');
+            const symptomsEl = document.getElementById('srotas-symptom-details');
+
+            // Calculate overall srotas scores
+            let totalScore = 0;
+            let srotasHTML = '<div class="score-grid">';
+
+            const srotasNames = {
+                annavaha: 'Annavaha',
+                rasavaha: 'Rasavaha',
+                raktavaha: 'Raktavaha',
+                mamsavaha: 'Mamsavaha',
+                medavaha: 'Medavaha',
+                asthivaha: 'Asthivaha',
+                majjavaha: 'Majjavaha',
+                shukravaha: 'Shukravaha',
+                mutravaha: 'Mutravaha'
+            };
+
+            const scores = srotas.scores || srotas.srotasScores || {};
+            
+            Object.keys(srotasNames).forEach(srotasName => {
+                const score = scores[srotasName] || 0;
+                totalScore += score;
+                
+                srotasHTML += `
+                    <div class="score-card">
+                        <div class="score-value">${score}</div>
+                        <div class="score-label">${srotasNames[srotasName]}</div>
+                    </div>
+                `;
+            });
+
+            srotasHTML += '</div>';
+
+            let severity = 'normal';
+            let severityText = 'No significant srotas dysfunction';
+            
+            if (totalScore >= 1 && totalScore <= 10) {
+                severity = 'mild';
+                severityText = 'Mild srotas dysfunction';
+            } else if (totalScore >= 11 && totalScore <= 20) {
+                severity = 'moderate';
+                severityText = 'Moderate srotas blockage';
+            } else if (totalScore >= 21) {
+                severity = 'severe';
+                severityText = 'Severe srotas pathology';
+            }
+
+            srotasHTML += `
+                <p><strong>Total Srotas Score:</strong> ${totalScore}</p>
+                <p><strong>Assessment:</strong> <span class="severity-indicator ${severity}">${severityText}</span></p>
+                <p><strong>Most Affected:</strong> ${getMostAffectedSrotas(scores)}</p>
+            `;
+
+            assessmentEl.innerHTML = srotasHTML;
+
+            // Load symptoms
+            loadSrotasSymptoms(srotas, symptomsEl);
+        }
+
+        function loadSrotasSymptoms(srotas, symptomsEl) {
+            const selectedSymptoms = srotas.selectedSymptoms || srotas.symptoms || {};
+            let symptomsHTML = '';
+            
+            const srotasNames = {
+                annavaha: 'Annavaha',
+                rasavaha: 'Rasavaha',
+                raktavaha: 'Raktavaha',
+                mamsavaha: 'Mamsavaha',
+                medavaha: 'Medavaha',
+                asthivaha: 'Asthivaha',
+                majjavaha: 'Majjavaha',
+                shukravaha: 'Shukravaha',
+                mutravaha: 'Mutravaha'
+            };
+
+            Object.keys(srotasNames).forEach(srotasName => {
+                const symptoms = selectedSymptoms[srotasName] || [];
+                if (Array.isArray(symptoms) && symptoms.length > 0) {
+                    symptomsHTML += `
+                        <div style="margin-bottom: 15px;">
+                            <strong>${srotasNames[srotasName]} Srotas:</strong>
+                            <div class="symptom-tags" style="margin-top: 8px;">
+                                ${symptoms.map(s => `<span class="symptom-tag">${s.symptom || s.text} (${s.severity || 'mild'})</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            symptomsEl.innerHTML = symptomsHTML || '<p>No specific srotas symptoms recorded</p>';
+        }
+
+        function generateClinicalSummary() {
+            if (hasErrors) return;
+
+            const agni = combinedData.agni || {};
+            const dosha = combinedData.dosha || {};
+            const dhatu = combinedData.dhatu || {};
+            const srotas = combinedData.srotas || {};
+
+            // Agni Summary
+            const vishama = agni.vishama || agni.scores?.vishama || 0;
+            const tikshna = agni.tikshna || agni.scores?.tikshna || 0;
+            const manda = agni.manda || agni.scores?.manda || 0;
+            const sama = agni.sama || agni.scores?.sama || 0;
+            const agniTotal = vishama + tikshna + manda;
+            
+            let agniStatus = 'Sama Agni (Optimal)';
+            if (agniTotal > 0) {
+                if (agniTotal <= 4) agniStatus = 'Mild Agni Dusti';
+                else if (agniTotal <= 6) agniStatus = 'Moderate Agni Dusti';
+                else agniStatus = 'Severe Agni Dusti';
+            }
+            
+            document.getElementById('agni-summary').innerHTML = `
+                <p><strong>Status:</strong> ${agniStatus}</p>
+                <p><strong>Dusti Score:</strong> ${agniTotal}/15</p>
+                <p><strong>Sama Score:</strong> ${sama}/5</p>
+                <p><strong>Impact:</strong> ${getAgniImpact(agniTotal)}</p>
+            `;
+
+            // Dosha Summary
+            const vScore = dosha.vata || dosha.scores?.vata || 0;
+            const pScore = dosha.pitta || dosha.scores?.pitta || 0;
+            const kScore = dosha.kapha || dosha.scores?.kapha || 0;
+            const maxScore = Math.max(vScore, pScore, kScore);
+            
+            let dominantDosha = 'Balanced State';
+            if (maxScore > 0) {
+                if (maxScore === vScore) dominantDosha = `Vata Dushti (${vScore})`;
+                else if (maxScore === pScore) dominantDosha = `Pitta Dushti (${pScore})`;
+                else if (maxScore === kScore) dominantDosha = `Kapha Dushti (${kScore})`;
+            }
+            
+            document.getElementById('dosha-summary').innerHTML = `
+                <p><strong>Pattern:</strong> ${dominantDosha}</p>
+                <p><strong>Total Score:</strong> ${vScore + pScore + kScore}</p>
+                <p><strong>Constitution:</strong> ${getDoshaConstitution(vScore, pScore, kScore)}</p>
+                <p><strong>Balance:</strong> ${getDoshaBalance(vScore, pScore, kScore)}</p>
+            `;
+
+            // Dhatu Summary
+            const dhatuScores = dhatu.scores || dhatu.dhatuScores || {};
+            let totalDhatuKshaya = 0;
+            let totalDhatuVriddhi = 0;
+            let affectedDhatus = 0;
+            
+            Object.keys(dhatuScores).forEach(d => {
+                const kshaya = dhatuScores[d].kshaya || 0;
+                const vriddhi = dhatuScores[d].vriddhi || 0;
+                totalDhatuKshaya += kshaya;
+                totalDhatuVriddhi += vriddhi;
+                if (kshaya > 0 || vriddhi > 0) affectedDhatus++;
+            });
+            
+            document.getElementById('dhatu-summary').innerHTML = `
+                <p><strong>Affected Dhatus:</strong> ${affectedDhatus}/7</p>
+                <p><strong>Total Score:</strong> ${totalDhatuKshaya + totalDhatuVriddhi}</p>
+                <p><strong>Kshaya/Vriddhi:</strong> ${totalDhatuKshaya}/${totalDhatuVriddhi}</p>
+                <p><strong>Priority:</strong> ${getDhatuPriority(dhatuScores)}</p>
+            `;
+
+            // Srotas Summary
+            const srotasScores = srotas.scores || srotas.srotasScores || {};
+            const totalSrotasScore = Object.values(srotasScores).reduce((total, score) => total + (score || 0), 0);
+            const affectedSrotas = Object.keys(srotasScores).filter(s => (srotasScores[s] || 0) > 0).length;
+            
+            document.getElementById('srotas-summary').innerHTML = `
+                <p><strong>Affected Channels:</strong> ${affectedSrotas}/9</p>
+                <p><strong>Total Score:</strong> ${totalSrotasScore}</p>
+                <p><strong>Severity:</strong> ${getSrotasSeverity(totalSrotasScore)}</p>
+                <p><strong>Priority:</strong> ${getSrotasPriority(srotasScores)}</p>
+            `;
+        }
+
+        function generateRecommendations() {
+            if (hasErrors) return;
+
+            const recommendations = [];
+            const agni = combinedData.agni || {};
+            const dosha = combinedData.dosha || {};
+            const dhatu = combinedData.dhatu || {};
+            const srotas = combinedData.srotas || {};
+
+            // Agni recommendations
+            const vishama = agni.vishama || agni.scores?.vishama || 0;
+            const tikshna = agni.tikshna || agni.scores?.tikshna || 0;
+            const manda = agni.manda || agni.scores?.manda || 0;
+            const agniTotal = vishama + tikshna + manda;
+
+            if (agniTotal > 0) {
+                if (vishama > 0) {
+                    recommendations.push("🔥 Vishama Agni: Establish regular meal timings, consume warm cooked foods, avoid irregular eating patterns and excessive travel");
+                }
+                if (tikshna > 0) {
+                    recommendations.push("🔥 Tikshna Agni: Include cooling foods, avoid spicy and acidic foods, take regular moderate meals, practice cooling pranayama");
+                }
+                if (manda > 0) {
+                    recommendations.push("🔥 Manda Agni: Consume light digestible foods, use warming spices, avoid heavy cold foods, engage in regular exercise");
+                }
+            } else {
+                recommendations.push("✅ Maintain current balanced digestive practices and regular eating schedule");
+            }
+
+            // Dosha recommendations
+            const vScore = dosha.vata || dosha.scores?.vata || 0;
+            const pScore = dosha.pitta || dosha.scores?.pitta || 0;
+            const kScore = dosha.kapha || dosha.scores?.kapha || 0;
+
+            if (vScore > 0) {
+                recommendations.push("💨 Vata Pacification: Regular oil massage (abhyanga), warm foods, establish consistent daily routine, practice stress management techniques");
+            }
+            if (pScore > 0) {
+                recommendations.push("🔥 Pitta Pacification: Consume cooling foods, practice moderate exercise, avoid excessive heat exposure and intense stress");
+            }
+            if (kScore > 0) {
+                recommendations.push("🌊 Kapha Pacification: Light foods, vigorous exercise, avoid heavy cold foods, maintain active lifestyle, practice stimulating pranayama");
+            }
+
+            // Dhatu recommendations
+            const dhatuScores = dhatu.scores || dhatu.dhatuScores || {};
+            const affectedDhatus = Object.keys(dhatuScores).filter(d => 
+                (dhatuScores[d].kshaya || 0) + (dhatuScores[d].vriddhi || 0) > 0
+            );
+
+            if (affectedDhatus.length > 0) {
+                recommendations.push("🧬 Dhatu Support: Follow nutritive diet rich in wholesome foods, consider appropriate rasayana therapy, implement lifestyle modifications for tissue health");
+                recommendations.push("💪 Tissue Regeneration: Consider panchakarma procedures for deep tissue cleansing and rejuvenation, practice yoga and meditation");
+            }
+
+            // Srotas recommendations
+            const srotasScores = srotas.scores || srotas.srotasScores || {};
+            const totalSrotasScore = Object.values(srotasScores).reduce((total, score) => total + (score || 0), 0);
+            
+            if (totalSrotasScore > 0) {
+                recommendations.push("🌊 Channel Clearance: Implement detoxification procedures, engage in appropriate exercise, practice pranayama for channel purification");
+                recommendations.push("🧘 Lifestyle Integration: Regular yoga practice, meditation, stress reduction techniques for optimal channel function");
+            }
+
+            // General recommendations
+            recommendations.push("📋 Follow-up Assessment: Schedule regular monitoring and reassessment every 3-6 months to track progress");
+            recommendations.push("👨‍⚕️ Professional Consultation: Consult qualified Ayurvedic physician for personalized treatment protocol and medicine prescription");
+            recommendations.push("📚 Education: Learn about your constitution and maintain awareness of dietary and lifestyle factors affecting your health");
+
+            const listEl = document.getElementById('recommendations-list');
+            listEl.innerHTML = recommendations.map(rec => 
+                `<li class="recommendation-item">${rec}</li>`
+            ).join('');
+        }
+
+        // Helper functions for assessment
+        function getDoshaSeverityClass(score) {
+            if (score === 0) return 'normal';
+            if (score <= 5) return 'mild';
+            if (score <= 10) return 'moderate';
+            return 'severe';
+        }
+
+        function getDoshaSeverityText(score) {
+            if (score === 0) return 'No dushti detected';
+            if (score <= 5) return 'Mild dushti';
+            if (score <= 10) return 'Moderate dushti';
+            return 'Severe dushti';
+        }
+
+        function getDominantAgniType(vishama, tikshna, manda, sama) {
+            const scores = { vishama, tikshna, manda, sama };
+            const maxScore = Math.max(...Object.values(scores));
+            
+            if (maxScore === 0) return 'Balanced Agni';
+            
+            const dominantTypes = Object.keys(scores).filter(type => scores[type] === maxScore);
+            
+            if (dominantTypes.length === 1) {
+                return dominantTypes[0].charAt(0).toUpperCase() + dominantTypes[0].slice(1) + ' Agni';
+            } else {
+                return dominantTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join('-') + ' Mixed';
+            }
+        }
+
+        function getAgniImpact(score) {
+            if (score === 0) return 'Optimal digestive capacity and metabolic function';
+            if (score <= 4) return 'Minor digestive irregularities, manageable with lifestyle changes';
+            if (score <= 6) return 'Significant digestive dysfunction requiring therapeutic intervention';
+            return 'Severe digestive pathology requiring immediate comprehensive treatment';
+        }
+
+        function getDoshaConstitution(vata, pitta, kapha) {
+            const scores = [vata, pitta, kapha];
+            const names = ['Vata', 'Pitta', 'Kapha'];
+            const max = Math.max(...scores);
+            
+            if (max === 0) return 'Balanced Constitution (Ideal State)';
+            
+            const dominant = [];
+            scores.forEach((score, i) => {
+                if (score === max) dominant.push(names[i]);
+            });
+            
+            if (dominant.length === 1) return `${dominant[0]} Predominant Type`;
+            return `${dominant.join('-')} Mixed Constitutional Type`;
+        }
+
+        function getDoshaBalance(vata, pitta, kapha) {
+            const total = vata + pitta + kapha;
+            if (total === 0) return 'Perfect Balance';
+            if (total <= 5) return 'Good Balance';
+            if (total <= 15) return 'Moderate Imbalance';
+            return 'Significant Imbalance';
+        }
+
+        function getMostAffectedDhatu(scores) {
+            let maxScore = 0;
+            let mostAffected = 'All dhatus balanced';
+            
+            Object.keys(scores).forEach(dhatu => {
+                const total = (scores[dhatu].kshaya || 0) + (scores[dhatu].vriddhi || 0);
+                if (total > maxScore) {
+                    maxScore = total;
+                    mostAffected = `${dhatu.charAt(0).toUpperCase() + dhatu.slice(1)} dhatu (Score: ${total})`;
+                }
+            });
+            
+            return mostAffected;
+        }
+
+        function getMostAffectedSrotas(scores) {
+            let maxScore = 0;
+            let mostAffected = 'All channels functioning well';
+            
+            Object.keys(scores).forEach(srotas => {
+                const score = scores[srotas] || 0;
+                if (score > maxScore) {
+                    maxScore = score;
+                    mostAffected = `${srotas.charAt(0).toUpperCase() + srotas.slice(1)} srotas (Score: ${score})`;
+                }
+            });
+            
+            return mostAffected;
+        }
+
+        function getDhatuPriority(scores) {
+            const priorities = [];
+            Object.keys(scores).forEach(dhatu => {
+                const kshaya = scores[dhatu].kshaya || 0;
+                const vriddhi = scores[dhatu].vriddhi || 0;
+                const total = kshaya + vriddhi;
+                
+                if (total > 0) {
+                    priorities.push({
+                        name: dhatu,
+                        score: total,
+                        type: kshaya > vriddhi ? 'Kshaya' : vriddhi > kshaya ? 'Vriddhi' : 'Mixed'
+                    });
+                }
+            });
+            
+            if (priorities.length === 0) return 'All dhatus in balance';
+            
+            priorities.sort((a, b) => b.score - a.score);
+            return `${priorities[0].name.charAt(0).toUpperCase() + priorities[0].name.slice(1)} (${priorities[0].type})`;
+        }
+
+        function getSrotasSeverity(score) {
+            if (score === 0) return 'All channels functioning optimally';
+            if (score <= 10) return 'Mild channel dysfunction - manageable';
+            if (score <= 20) return 'Moderate channel blockage - requires attention';
+            return 'Severe channel pathology - immediate intervention needed';
+        }
+
+        function getSrotasPriority(scores) {
+            const affected = Object.keys(scores)
+                .filter(s => (scores[s] || 0) > 0)
+                .sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+            
+            if (affected.length === 0) return 'All channels clear';
+            return `${affected[0].charAt(0).toUpperCase() + affected[0].slice(1)} srotas most affected`;
+        }
+
+        function generatePatientId() {
+            const date = new Date();
+            const year = date.getFullYear().toString().substr(-2);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `4PCAM${year}${month}${day}${random}`;
+        }
+
+        // Export and action functions
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            
+            if (!jsPDF) {
+                alert('PDF library not loaded. Please try again.');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'flex';
+            
+            try {
+                // Hide action buttons temporarily
+                const actionsSection = document.querySelector('.actions-section');
+                const originalDisplay = actionsSection.style.display;
+                actionsSection.style.display = 'none';
+                
+                // Create PDF with better settings
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    putOnlyUsedFonts: true
+                });
+
+                // Use html2canvas to convert content to image
+                const canvas = await html2canvas(document.getElementById('report-container'), {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: 1200,
+                    height: document.getElementById('report-container').scrollHeight
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.8);
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 295; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                // Add first page
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // Add additional pages if needed
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // Generate filename
+                const patientName = combinedData.patient?.name || 'Patient';
+                const date = new Date().toISOString().split('T')[0];
+                const filename = `${patientName.replace(/\s+/g, '_')}_4PCAM_Report_${date}.pdf`;
+
+                // Save the PDF
+                pdf.save(filename);
+                
+                // Show action buttons again
+                actionsSection.style.display = originalDisplay;
+                
+                alert('PDF report generated successfully!');
+                
+            } catch (error) {
+                console.error('PDF generation failed:', error);
+                alert('Failed to generate PDF. Please try printing instead or check your browser compatibility.');
+                // Show action buttons again
+                document.querySelector('.actions-section').style.display = 'flex';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function printReport() {
+            // Hide action buttons for printing
+            const actionsSection = document.querySelector('.actions-section');
+            const originalDisplay = actionsSection.style.display;
+            actionsSection.style.display = 'none';
+            
+            // Add print-specific styles
+            const printStyle = document.createElement('style');
+            printStyle.innerHTML = `
+                @media print {
+                    .container { margin: 0; padding: 0; }
+                    .pillar-section { page-break-inside: avoid; }
+                    .clinical-summary { page-break-inside: avoid; }
+                    .recommendations { page-break-inside: avoid; }
+                }
+            `;
+            document.head.appendChild(printStyle);
+            
+            // Print
+            window.print();
+            
+            // Clean up and show action buttons again after print dialog
+            setTimeout(() => {
+                actionsSection.style.display = originalDisplay;
+                document.head.removeChild(printStyle);
+            }, 100);
+        }
+
+        function saveReport() {
+            try {
+                // Create comprehensive report data
+                const reportData = {
+                    metadata: {
+                        reportGeneratedOn: new Date().toISOString(),
+                        systemVersion: '4-PCAM v2.0',
+                        assessmentComplete: !hasErrors,
+                        patientId: combinedData.patient?.patientId || generatePatientId()
+                    },
+                    patient: combinedData.patient || {},
+                    assessments: {
+                        agni: combinedData.agni || {},
+                        dosha: combinedData.dosha || {},
+                        dhatu: combinedData.dhatu || {},
+                        srotas: combinedData.srotas || {}
+                    },
+                    summary: {
+                        agni: getAgniSummaryData(),
+                        dosha: getDoshaSummaryData(),
+                        dhatu: getDhatuSummaryData(),
+                        srotas: getSrotasSummaryData()
+                    },
+                    recommendations: getRecommendationsList(),
+                    clinicalNotes: generateClinicalNotes()
+                };
+
+                // Save as JSON file
+                const reportJSON = JSON.stringify(reportData, null, 2);
+                const blob = new Blob([reportJSON], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                
+                const patientName = combinedData.patient?.name || 'Patient';
+                const date = new Date().toISOString().split('T')[0];
+                a.download = `${patientName.replace(/\s+/g, '_')}_4PCAM_Complete_${date}.json`;
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('Complete assessment data saved successfully! You can import this file later to restore the assessment.');
+                
+            } catch (error) {
+                console.error('Save failed:', error);
+                alert('Failed to save report data. Please try again.');
+            }
+        }
+
+        function resetAllData() {
+            if (confirm('⚠️ Are you sure you want to delete ALL assessment data?\n\nThis will permanently remove:\n• Patient information\n• All assessment results\n• All selected symptoms\n• This report\n\nThis action cannot be undone!')) {
+                try {
+                    // Clear all localStorage data
+                    const keysToRemove = [
+                        '4pcam_patient_data',
+                        '4pcam_agni_data', 
+                        '4pcam_dosha_data',
+                        '4pcam_dhatu_data',
+                        '4pcam_srotas_data',
+                        '4pcam_combined_data',
+                        'ayurveda_assessment_autosave'
+                    ];
+                    
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+                    alert('✅ All data has been reset successfully!');
+                    window.location.href = 'index.html';
+                    
+                } catch (error) {
+                    console.error('Reset failed:', error);
+                    alert('Failed to reset all data. Please clear your browser cache manually.');
+                }
+            }
+        }
+
+        // Helper functions for report data
+        function getAgniSummaryData() {
+            const agni = combinedData.agni || {};
+            const vishama = agni.vishama || agni.scores?.vishama || 0;
+            const tikshna = agni.tikshna || agni.scores?.tikshna || 0;
+            const manda = agni.manda || agni.scores?.manda || 0;
+            const sama = agni.sama || agni.scores?.sama || 0;
+            const total = vishama + tikshna + manda;
+            
+            return {
+                vishama, tikshna, manda, sama,
+                totalDustiScore: total,
+                maxDustiScore: 15,
+                samaScore: sama,
+                maxSamaScore: 5,
+                status: total === 0 ? 'Sama Agni' : total <= 4 ? 'Mild Dusti' : total <= 6 ? 'Moderate Dusti' : 'Severe Dusti',
+                dominantType: getDominantAgniType(vishama, tikshna, manda, sama),
+                selectedSymptomsCount: Object.keys(agni.selectedSymptoms || {}).length
+            };
+        }
+
+        function getDoshaSummaryData() {
+            const dosha = combinedData.dosha || {};
+            const vataScore = dosha.vata || dosha.scores?.vata || 0;
+            const pittaScore = dosha.pitta || dosha.scores?.pitta || 0;
+            const kaphaScore = dosha.kapha || dosha.scores?.kapha || 0;
+            
+            return {
+                vataScore,
+                pittaScore, 
+                kaphaScore,
+                totalScore: vataScore + pittaScore + kaphaScore,
+                dominantDosha: getDominantDoshaType(vataScore, pittaScore, kaphaScore),
+                constitution: getDoshaConstitution(vataScore, pittaScore, kaphaScore),
+                balance: getDoshaBalance(vataScore, pittaScore, kaphaScore),
+                selectedSymptomsCount: Object.values(dosha.selectedSymptoms || {}).reduce((total, symptoms) => 
+                    total + (Array.isArray(symptoms) ? symptoms.length : 0), 0)
+            };
+        }
+
+        function getDhatuSummaryData() {
+            const dhatu = combinedData.dhatu || {};
+            const scores = dhatu.scores || dhatu.dhatuScores || {};
+            
+            let totalKshaya = 0;
+            let totalVriddhi = 0;
+            let affectedDhatus = 0;
+            const dhatuDetails = {};
+            
+            Object.keys(scores).forEach(d => {
+                const kshaya = scores[d].kshaya || 0;
+                const vriddhi = scores[d].vriddhi || 0;
+                totalKshaya += kshaya;
+                totalVriddhi += vriddhi;
+                if (kshaya > 0 || vriddhi > 0) affectedDhatus++;
+                
+                dhatuDetails[d] = { kshaya, vriddhi, total: kshaya + vriddhi };
+            });
+            
+            return {
+                totalKshaya,
+                totalVriddhi,
+                totalScore: totalKshaya + totalVriddhi,
+                affectedDhatus,
+                totalDhatus: 7,
+                dhatuDetails,
+                mostAffected: getMostAffectedDhatu(scores),
+                selectedSymptomsCount: Object.values(dhatu.selectedSymptoms || {}).reduce((total, d) => 
+                    total + (d.kshaya ? d.kshaya.length : 0) + (d.vriddhi ? d.vriddhi.length : 0), 0)
+            };
+        }
+
+        function getSrotasSummaryData() {
+            const srotas = combinedData.srotas || {};
+            const scores = srotas.scores || srotas.srotasScores || {};
+            const totalScore = Object.values(scores).reduce((total, score) => total + (score || 0), 0);
+            const affectedSrotas = Object.keys(scores).filter(s => (scores[s] || 0) > 0).length;
+            
+            return {
+                totalScore,
+                affectedSrotas,
+                totalSrotas: 9,
+                srotasDetails: scores,
+                mostAffected: getMostAffectedSrotas(scores),
+                severity: getSrotasSeverity(totalScore),
+                selectedSymptomsCount: Object.values(srotas.selectedSymptoms || {}).reduce((total, symptoms) => 
+                    total + (Array.isArray(symptoms) ? symptoms.length : 0), 0)
+            };
+        }
+
+        function getRecommendationsList() {
+            // Return the current recommendations from the page
+            const recommendationElements = document.querySelectorAll('.recommendation-item');
+            return Array.from(recommendationElements).map(el => el.textContent);
+        }
+
+        function generateClinicalNotes() {
+            const notes = [];
+            
+            // Add assessment completion status
+            if (hasErrors) {
+                notes.push('⚠️ Assessment incomplete - some data missing');
+            } else {
+                notes.push('✅ Complete 4-pillar assessment performed');
+            }
+            
+            // Add key findings
+            const agni = combinedData.agni || {};
+            const agniTotal = (agni.vishama || 0) + (agni.tikshna || 0) + (agni.manda || 0);
+            if (agniTotal > 6) {
+                notes.push('🔥 Significant Agni dysfunction detected - priority for treatment');
+            }
+            
+            const dosha = combinedData.dosha || {};
+            const totalDoshaScore = (dosha.vata || 0) + (dosha.pitta || 0) + (dosha.kapha || 0);
+            if (totalDoshaScore > 15) {
+                notes.push('⚖️ Major dosha imbalance present - comprehensive approach needed');
+            }
+            
+            // Add timestamp and version
+            notes.push(`📅 Assessment completed: ${new Date().toLocaleString()}`);
+            notes.push('🏥 Generated by 4-PCAM System v2.0');
+            
+            return notes;
+        }
+
+        function getDominantDoshaType(vata, pitta, kapha) {
+            const max = Math.max(vata, pitta, kapha);
+            if (max === 0) return 'balanced';
+            if (max === vata) return 'vata';
+            if (max === pitta) return 'pitta';
+            return 'kapha';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Only trigger shortcuts if not in an input field
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printReport();
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveReport();
+            }
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                exportToPDF();
+            }
+            if (e.key === 'Escape') {
+                // Hide loading if visible
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Auto-save combined data on page load (backup)
+        function backupCombinedData() {
+            if (!hasErrors && combinedData) {
+                try {
+                    localStorage.setItem('4pcam_combined_data', JSON.stringify(combinedData));
+                    localStorage.setItem('4pcam_last_backup', new Date().toISOString());
+                } catch (e) {
+                    console.warn('Could not backup combined data:', e);
+                }
+            }
+        }
+
+        // Initialize backup on successful data load
+        if (!hasErrors) {
+            backupCombinedData();
+        }
+
+        // Add window beforeunload handler to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (!hasErrors && combinedData.patient) {
+                const message = 'Are you sure you want to leave? Make sure you have saved or exported your assessment report.';
+                e.returnValue = message;
+                return message;
+            }
+        });
+
+        // Console logging for debugging
+        console.log("✅ Final Assessment Report System v2.0 loaded successfully!");
+        if (combinedData.patient) {
+            console.log("📊 Report generated for:", combinedData.patient.name || 'Unknown Patient');
+            console.log("🏥 Assessment data:", {
+                patient: !!combinedData.patient,
+                agni: !!combinedData.agni,
+                dosha: !!combinedData.dosha,
+                dhatu: !!combinedData.dhatu,
+                srotas: !!combinedData.srotas,
+                hasErrors: hasErrors
+            });
+        }
+
+        // Utility function to format dates consistently
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            try {
+                return new Date(date).toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return date;
+            }
+        }
+
+        // Add responsive handling for better mobile experience
+        function handleResponsive() {
+            const container = document.querySelector('.container');
+            const assessmentSections = document.querySelector('.assessment-sections');
+            
+            if (window.innerWidth < 768) {
+                assessmentSections.style.gridTemplateColumns = '1fr';
+            } else if (window.innerWidth < 1200) {
+                assessmentSections.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            } else {
+                assessmentSections.style.gridTemplateColumns = 'repeat(auto-fit, minmax(600px, 1fr))';
+            }
+        }
+
+        // Initialize responsive handling
+        handleResponsive();
+        window.addEventListener('resize', handleResponsive);
+
+        // Add loading animation improvements
+        function showLoading(message = 'Processing...') {
+            const loading = document.getElementById('loading');
+            const loadingContent = loading.querySelector('.loading-content h3');
+            loadingContent.textContent = message;
+            loading.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Export additional functions for external use
+        window.assessmentReport = {
+            exportToPDF,
+            printReport, 
+            saveReport,
+            resetAllData,
+            combinedData,
+            hasErrors,
+            showLoading,
+            hideLoading
+        };
+
+    </script>
+</body>
+</html>
