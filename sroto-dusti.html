@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sroto Dusti Assessment - 4-PCAM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .header .description {
+            font-size: 1em;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .patient-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .patient-info > div {
+            padding: 8px 0;
+            font-size: 0.95em;
+        }
+
+        .assessment-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assessment-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .assessment-header h3 {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .assessment-header p {
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #1976d2;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+        }
+
+        .srotas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .srotas-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .srotas-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .srotas-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .srotas-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .srotas-header h4 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .srotas-header small {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .srotas-content {
+            padding: 24px;
+        }
+
+        .symptom-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .symptom-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+            margin: 10px 0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .symptom-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transition: left 0.3s ease;
+        }
+
+        .symptom-item:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateX(4px);
+        }
+
+        .symptom-item:hover::before {
+            left: 0;
+        }
+
+        .symptom-item.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .symptom-item.selected::before {
+            left: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        }
+
+        .symptom-item span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .severity-controls {
+            display: none;
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .symptom-item.selected .severity-controls {
+            display: flex;
+        }
+
+        .severity-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .severity-btn:hover, .severity-btn.active {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .srotas-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .srotas-score::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .srotas-score span:last-child {
+            font-size: 0.9em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+
+
+        .results-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 30px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .results-section h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .severity-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .severity-indicator:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .normal { 
+            background: linear-gradient(135deg, #00b894, #00a085); 
+            color: white; 
+        }
+        .mild { 
+            background: linear-gradient(135deg, #fdcb6e, #e17055); 
+            color: white; 
+        }
+        .moderate { 
+            background: linear-gradient(135deg, #e17055, #d63031); 
+            color: white; 
+        }
+        .severe { 
+            background: linear-gradient(135deg, #d63031, #a71e1e); 
+            color: white; 
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(0,0,0,0.05);
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            transition: left 0.3s ease;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn:disabled {
+            background: #e9ecef !important;
+            color: #6c757d !important;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn:disabled::before {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .srotas-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .srotas-symptom-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .assessment-header {
+                padding: 20px;
+            }
+            
+            .srotas-content {
+                padding: 15px;
+            }
+        }
+
+        /* Enhanced animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .srotas-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .srotas-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .srotas-card:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+
+        /* Subtle hover effects for better UX */
+        .patient-info:hover {
+            transform: translateY(-2px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .instructions:hover {
+            transform: translateY(-1px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🌊 COMPLETE SROTO DUSTI ASSESSMENT</h1>
+                <p class="subtitle"><strong>PILLAR 4 of 4-PCAM</strong></p>
+                <p class="description">All 15 Classical Srotas - Complete Channel System Evaluation</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="patient-info" id="patient-info">
+                <!-- Patient info will be loaded here -->
+            </div>
+
+            <div class="assessment-header">
+                <h3>🌊 COMPLETE 15-SROTAS ASSESSMENT</h3>
+                <p>Comprehensive evaluation of all classical body channels based on traditional lakshanas</p>
+            </div>
+
+            <div class="instructions">
+                <strong>📋 INSTRUCTIONS:</strong> This is the complete 15-srotas assessment as per classical Ayurvedic texts. Score 0-2 per symptom (0=Absent, 1=Mild, 2=Severe). Click symptoms present, then select severity. Each srotas represents a specific physiological channel system.<br>
+                <small><em>Note: Most srotas have 5 symptoms each, except some which have 6-7 symptoms based on classical texts, for a total of authentic symptoms across all 15 srotas.</em></small>
+            </div>
+
+            <div class="srotas-grid">
+                <!-- 1. PRANAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🫁 1. PRANAVAHA SROTAS</h4>
+                        <small>(Respiratory Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Ati srushta shwasam">
+                                <span>Prolonged breathing (Ati srushta shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Ati baddham">
+                                <span>Short breathing (Ati baddham)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Kupitam shwasam">
+                                <span>Difficult breathing (Kupitam shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Alpam alpam shwasam">
+                                <span>Interrupted breathing (Alpam alpam shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Abheekshnam shwasam">
+                                <span>Highly disturbed breathing (Abheekshnam shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Sa shabda shwasam">
+                                <span>Abnormal sounds in breathing (Sa shabda shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="pranavaha" data-symptom="Sa shula shwasam">
+                                <span>Painful breathing (Sa shula shwasam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="pranavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. UDAKAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>💧 2. UDAKAVAHA SROTAS</h4>
+                        <small>(Water Carrying Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Jihwa shosha">
+                                <span>Tongue dryness (Jihwa shosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Taalu shosha">
+                                <span>Palate dryness (Taalu shosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Oshta shosha">
+                                <span>Lip dryness (Oshta shosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Kantha shosha">
+                                <span>Throat dryness (Kantha shosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Kloma shosha">
+                                <span>Kloma dryness (Kloma shosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="udakavaha" data-symptom="Ati pravriddam pipaasaa">
+                                <span>Severe thirst (Ati pravriddam pipaasaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="udakavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ANNAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🍽️ 3. ANNAVAHA SROTAS</h4>
+                        <small>(Food Carrying Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="annavaha" data-symptom="Ananna abhilasha">
+                                <span>Food aversion (Ananna abhilasha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="annavaha" data-symptom="Arochaka">
+                                <span>Tastelessness (Arochaka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="annavaha" data-symptom="Avipaaka">
+                                <span>Indigestion (Avipaaka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="annavaha" data-symptom="Chardi">
+                                <span>Vomiting (Chardi)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="annavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. RASAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>💧 4. RASAVAHA SROTAS</h4>
+                        <small>(Nutritional Essence Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Ashraddha">
+                                <span>Lack of food interest (Ashraddha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Aruchi">
+                                <span>Tastelessness (Aruchi)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Aasya vairasya">
+                                <span>Weird mouth taste (Aasya vairasya)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Arasagnata">
+                                <span>Taste identification failure (Arasagnata)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Hrullasa">
+                                <span>Excessive salivation (Hrullasa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Gourava">
+                                <span>Body heaviness (Gourava)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Tandra">
+                                <span>Drowsiness (Tandra)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Angamarda">
+                                <span>Body pain (Angamarda)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Jwara">
+                                <span>Fever (Jwara)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="rasavaha" data-symptom="Pandutva">
+                                <span>Anemia (Pandutva)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="rasavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. RAKTAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🩸 5. RAKTAVAHA SROTAS</h4>
+                        <small>(Blood Carrying Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Guda paka">
+                                <span>Anal inflammation (Guda paka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Medhra paaka">
+                                <span>Penis inflammation (Medhra paaka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Aasya paaka">
+                                <span>Mouth ulceration (Aasya paaka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Pleehaa">
+                                <span>Spleen enlargement (Pleehaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Gulmo">
+                                <span>Abdominal tumours (Gulmo)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Vidradhi">
+                                <span>Abscess (Vidradhi)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Neelikaa">
+                                <span>Bluish eruptions (Neelikaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Kamala">
+                                <span>Jaundice (Kamala)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Vyangaha piplavaha">
+                                <span>Pigmentation disorders (Vyangaha piplavaha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Dadruhu">
+                                <span>Ringworm (Dadruhu)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Charmadalam">
+                                <span>Excoriation (Charmadalam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Shvitram">
+                                <span>Leukoderma (Shvitram)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Paamaa">
+                                <span>Scabies (Paamaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Kotha">
+                                <span>Skin eruptions (Kotha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="raktavaha" data-symptom="Asra mandalam">
+                                <span>Red circular patches (Asra mandalam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="raktavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. MAMSAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>💪 6. MAMSAVAHA SROTAS</h4>
+                        <small>(Muscle Tissue Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Adhi maamsa">
+                                <span>Excessive muscle growth (Adhi maamsa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Arbudam">
+                                <span>Tumours (Arbudam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Keelam">
+                                <span>Tonsillitis (Keelam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Gala shaalooka">
+                                <span>Adenoids (Gala shaalooka)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Gala shundike">
+                                <span>Elongated uvula (Gala shundike)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Pooti maamsa">
+                                <span>Muscle necrosis (Pooti maamsa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Galaganda">
+                                <span>Goitre (Galaganda)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Gandamala">
+                                <span>Cervical lymphadenitis (Gandamala)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mamsavaha" data-symptom="Upajihwikaa">
+                                <span>Epiglottitis (Upajihwikaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="mamsavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. MEDAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🫅 7. MEDAVAHA SROTAS</h4>
+                        <small>(Fat Tissue Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Atisthula">
+                                <span>Obesity (Atisthula)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati krusha">
+                                <span>Emaciation (Ati krusha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati loma">
+                                <span>Excessive body hair (Ati loma)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Aloma">
+                                <span>Lack of body hair (Aloma)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati gaura">
+                                <span>Excessive white complexion (Ati gaura)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati krushna">
+                                <span>Excessive dark complexion (Ati krushna)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati deergha">
+                                <span>Gigantism (Ati deergha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Ati hrusva">
+                                <span>Dwarfism (Ati hrusva)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="medavaha" data-symptom="Prameha purvarupa">
+                                <span>Diabetes symptoms (Prameha purvarupa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="medavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. ASTHIVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🦴 8. ASTHIVAHA SROTAS</h4>
+                        <small>(Bone Tissue Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Adhyasthi">
+                                <span>Extra bone growth (Adhyasthi)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Adhi dantau">
+                                <span>Extra teeth growth (Adhi dantau)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Danta bheda shoola">
+                                <span>Toothache (Danta bheda shoola)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Asthi bheda shoolam">
+                                <span>Bone pain (Asthi bheda shoolam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Vivarnataa">
+                                <span>Body discoloration (Vivarnataa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Kesha dosha">
+                                <span>Hair disorders (Kesha dosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Loma dosha">
+                                <span>Body hair disorders (Loma dosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Nakha dosha">
+                                <span>Nail disorders (Nakha dosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="asthivaha" data-symptom="Shmashru dosha">
+                                <span>Mustache disorders (Shmashru dosha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="asthivaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. MAJJAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🧠 9. MAJJAVAHA SROTAS</h4>
+                        <small>(Bone Marrow Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="majjavaha" data-symptom="Parva ruk">
+                                <span>Joint pain (Parva ruk)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="majjavaha" data-symptom="Bhrama">
+                                <span>Giddiness (Bhrama)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="majjavaha" data-symptom="Murcha">
+                                <span>Fainting (Murcha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="majjavaha" data-symptom="Tamo darshana">
+                                <span>Visual darkness (Tamo darshana)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                           <li class="symptom-item" data-srotas="majjavaha" data-symptom="Aroomshi">
+                                <span>Seborrhea (Aroomshi)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="majjavaha" data-symptom="Sthoola mula parvas">
+                                <span>Enlarged joints (Sthoola mula parvas)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="majjavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. SHUKRAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🌱 10. SHUKRAVAHA SROTAS</h4>
+                        <small>(Reproductive Tissue Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="shukravaha" data-symptom="Klaibyam">
+                                <span>Impotence (Klaibyam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="shukravaha" data-symptom="Aharshanam">
+                                <span>Lack of erection (Aharshanam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="shukravaha" data-symptom="Na jaayate garbhaha">
+                                <span>No progeny (Na jaayate garbhaha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="shukravaha" data-symptom="Rogee kleebam">
+                                <span>Unhealthy offspring (Rogee kleebam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="shukravaha" data-symptom="Garbha patati">
+                                <span>Fetal loss (Garbha patati)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="shukravaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 11. MUTRAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>💧 11. MUTRAVAHA SROTAS</h4>
+                        <small>(Urinary Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Ati-srushtam">
+                                <span>Excessive urination (Ati-srushtam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Ati-baddham">
+                                <span>Scanty urination (Ati-baddham)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Prakupitam">
+                                <span>Obstructed urination (Prakupitam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Alpam alpam">
+                                <span>Frequent urination (Alpam alpam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Bahalam">
+                                <span>Thick urine (Bahalam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="mutravaha" data-symptom="Sashulam">
+                                <span>Painful urination (Sashulam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="mutravaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12. PURISHAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🚽 12. PURISHAVAHA SROTAS</h4>
+                        <small>(Excretory Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Kruchrata">
+                                <span>Difficult defecation (Kruchrata)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Alpam alpam">
+                                <span>Small quantity stool (Alpam alpam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Sa shabdam">
+                                <span>Sounds during defecation (Sa shabdam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Sa shulam">
+                                <span>Painful defecation (Sa shulam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>        
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Ati dravam">
+                                <span>Liquid stools (Ati dravam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Ati gratitham">
+                                <span>Hard pellet stools (Ati gratitham)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="purishavaha" data-symptom="Ati bahu">
+                                <span>Excess stool formation (Ati bahu)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="purishavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 13. SWEDAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>💦 13. SWEDAVAHA SROTAS</h4>
+                        <small>(Sweat Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Aswedanam">
+                                <span>Lack of sweating (Aswedanam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Ati swedanam">
+                                <span>Excessive sweating (Ati swedanam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Parushyam">
+                                <span>Skin roughness (Parushyam)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Ati shlakshnata">
+                                <span>Excessive skin smoothness (Ati shlakshnata)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Paridaha">
+                                <span>Burning sensation (Paridaha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="swedavaha" data-symptom="Lomaharsha">
+                                <span>Horripilation (Lomaharsha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="swedavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 14. ARTAVAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🌸 14. ARTAVAVAHA SROTAS</h4>
+                        <small>(Menstrual Channels - Women Only)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="artavavaha" data-symptom="Vandhyataa">
+                                <span>Infertility (Vandhyataa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="artavavaha" data-symptom="Maithuna asahishnutaa">
+                                <span>Sexual intolerance (Maithuna asahishnutaa)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="artavavaha" data-symptom="Aartava naasha">
+                                <span>Menstrual disorders (Aartava naasha)</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="artavavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 15. STANYAVAHA SROTAS -->
+                <div class="srotas-card">
+                    <div class="srotas-header">
+                        <h4>🤱 15. STANYAVAHA SROTAS</h4>
+                        <small>(Breast Milk Channels)</small>
+                    </div>
+                    <div class="srotas-content">
+                        <ul class="symptom-checklist">
+                            <li class="symptom-item" data-srotas="stanyavaha" data-symptom="Insufficient milk production">
+                                <span>Insufficient milk production</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="stanyavaha" data-symptom="Excessive milk production">
+                                <span>Excessive milk production</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="stanyavaha" data-symptom="Breast infections">
+                                <span>Breast infections</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="stanyavaha" data-symptom="Breast lumps">
+                                <span>Breast lumps</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                            <li class="symptom-item" data-srotas="stanyavaha" data-symptom="Nipple disorders">
+                                <span>Nipple disorders</span>
+                                <div class="severity-controls">
+                                    <button class="severity-btn" data-score="1">1</button>
+                                    <button class="severity-btn" data-score="2">2</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="srotas-score">
+                            <span class="score-value" id="stanyavaha-score">0</span>
+                            <span>Total Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="results-section">
+                <h4>📊 Complete Srotas Assessment Results</h4>
+                <div id="srotas-results">Please select symptoms to view assessment results...</div>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="dhatu-dusti.html" class="btn btn-secondary">← Back to Dhatu Assessment</a>
+                <button class="btn btn-primary" id="srotas-complete-btn" onclick="completeSrotasAssessment()">Complete Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete Srotas assessment data for all 15 srotas
+        let srotasData = {
+            scores: {
+                pranavaha: 0,
+                udakavaha: 0,
+                annavaha: 0,
+                rasavaha: 0,
+                raktavaha: 0,
+                mamsavaha: 0,
+                medavaha: 0,
+                asthivaha: 0,
+                majjavaha: 0,
+                shukravaha: 0,
+                mutravaha: 0,
+                purishavaha: 0,
+                swedavaha: 0,
+                artavavaha: 0,
+                stanyavaha: 0
+            },
+            selectedSymptoms: {
+                pranavaha: [],
+                udakavaha: [],
+                annavaha: [],
+                rasavaha: [],
+                raktavaha: [],
+                mamsavaha: [],
+                medavaha: [],
+                asthivaha: [],
+                majjavaha: [],
+                shukravaha: [],
+                mutravaha: [],
+                purishavaha: [],
+                swedavaha: [],
+                artavavaha: [],
+                stanyavaha: []
+            },
+            completed: false
+        };
+
+        // Initialize all srotas data to ensure consistency
+        function initializeSrotasData() {
+            const allSrotas = [
+                'pranavaha', 'udakavaha', 'annavaha', 'rasavaha', 'raktavaha',
+                'mamsavaha', 'medavaha', 'asthivaha', 'majjavaha', 'shukravaha',
+                'mutravaha', 'purishavaha', 'swedavaha', 'artavavaha', 'stanyavaha'
+            ];
+
+            // Ensure all srotas exist in scores object
+            allSrotas.forEach(srotas => {
+                if (!srotasData.scores.hasOwnProperty(srotas)) {
+                    srotasData.scores[srotas] = 0;
+                }
+                if (!srotasData.selectedSymptoms.hasOwnProperty(srotas)) {
+                    srotasData.selectedSymptoms[srotas] = [];
+                }
+            });
+
+            console.log('✅ All srotas data initialized:', Object.keys(srotasData.scores));
+        }
+
+        let patientData = {};
+        let agniData = {};
+        let doshaData = {};
+        let dhatuData = {};
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSrotasData();
+            loadPreviousData();
+            loadPreviousSrotasData();
+            addEventListeners();
+            updateDisplay();
+            console.log('🌊 Complete Srotas Assessment System initialized with all 15 srotas');
+        });
+
+        function loadPreviousData() {
+            // Load combined data
+            const combined = localStorage.getItem('4pcam_combined_data');
+            if (combined) {
+                try {
+                    const data = JSON.parse(combined);
+                    patientData = data.patient || {};
+                    agniData = data.agni || {};
+                    doshaData = data.dosha || {};
+                    dhatuData = data.dhatu || {};
+                    displayPatientInfo();
+                } catch (e) {
+                    console.log('Could not load combined data');
+                }
+            }
+
+            // If prerequisites not completed, redirect
+            if (!patientData.name || !agniData.completed || !doshaData.completed || !dhatuData.completed) {
+                alert('Please complete all previous assessments (Patient Info, Agni, Dosha, Dhatu) first.');
+                window.location.href = 'patient-info.html';
+            }
+        }
+
+        function displayPatientInfo() {
+            const infoEl = document.getElementById('patient-info');
+            if (patientData.name) {
+                const agniStatus = getAgniStatus();
+                const doshaStatus = getDoshaStatus();
+                const dhatuStatus = getDhatuStatus();
+                
+                infoEl.innerHTML = `
+                    <div><strong>Patient:</strong> ${patientData.name}</div>
+                    <div><strong>Age/Sex:</strong> ${patientData.ageSex}</div>
+                    <div><strong>Date:</strong> ${patientData.assessmentDate}</div>
+                    <div><strong>Agni:</strong> ${agniStatus}</div>
+                    <div><strong>Dosha:</strong> ${doshaStatus}</div>
+                    <div><strong>Dhatu:</strong> ${dhatuStatus}</div>
+                `;
+            }
+        }
+
+        function getAgniStatus() {
+            if (!agniData.completed) return 'Not completed';
+            const totalDusti = (agniData.vishama || 0) + (agniData.tikshna || 0) + (agniData.manda || 0);
+            if (totalDusti === 0) return 'Sama Agni';
+            if (totalDusti <= 4) return 'Mild Dusti';
+            return 'Moderate-Severe Dusti';
+        }
+
+        function getDoshaStatus() {
+            if (!doshaData.completed) return 'Not completed';
+            const vata = doshaData.vata || 0;
+            const pitta = doshaData.pitta || 0;
+            const kapha = doshaData.kapha || 0;
+            const max = Math.max(vata, pitta, kapha);
+            
+            if (max === vata && vata > 0) return `Vata Dominant`;
+            if (max === pitta && pitta > 0) return `Pitta Dominant`;
+            if (max === kapha && kapha > 0) return `Kapha Dominant`;
+            return 'Balanced';
+        }
+
+        function getDhatuStatus() {
+            if (!dhatuData.completed) return 'Not completed';
+            const totalSymptoms = Object.values(dhatuData.selectedSymptoms || {}).reduce((total, dhatu) => {
+                return total + (dhatu.kshaya ? dhatu.kshaya.length : 0) + (dhatu.vriddhi ? dhatu.vriddhi.length : 0);
+            }, 0);
+            return `${totalSymptoms} symptoms identified`;
+        }
+
+        function addEventListeners() {
+            // Add click listeners to all symptom items
+            document.querySelectorAll('.symptom-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on severity buttons
+                    if (e.target.classList.contains('severity-btn')) {
+                        return;
+                    }
+                    handleSymptomClick(this);
+                });
+            });
+
+            // Add click listeners to severity buttons
+            document.querySelectorAll('.severity-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleSeverityClick(this);
+                });
+            });
+        }
+
+        function handleSymptomClick(item) {
+            const srotas = item.dataset.srotas;
+            const symptom = item.dataset.symptom;
+
+            // Toggle selection
+            if (item.classList.contains('selected')) {
+                // Deselect
+                item.classList.remove('selected');
+                removeSymptom(srotas, symptom);
+            } else {
+                // Select with default severity 1
+                item.classList.add('selected');
+                addSymptom(srotas, symptom, 1);
+                // Set default severity button
+                const severityBtn1 = item.querySelector('.severity-btn[data-score="1"]');
+                if (severityBtn1) {
+                    item.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('active'));
+                    severityBtn1.classList.add('active');
+                }
+            }
+
+            updateDisplay();
+            saveSrotasData();
+        }
+
+        function handleSeverityClick(btn) {
+            const item = btn.closest('.symptom-item');
+            const srotas = item.dataset.srotas;
+            const symptom = item.dataset.symptom;
+            const severity = parseInt(btn.dataset.score);
+
+            // Update severity button visual state
+            item.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update symptom with new severity
+            updateSymptomSeverity(srotas, symptom, severity);
+
+            updateDisplay();
+            saveSrotasData();
+        }
+
+        function addSymptom(srotas, symptom, severity = 1) {
+            if (!srotasData.selectedSymptoms[srotas]) {
+                console.error(`Invalid srotas: ${srotas}`);
+                return;
+            }
+
+            // Remove if already exists
+            removeSymptom(srotas, symptom);
+            
+            // Add new symptom
+            srotasData.selectedSymptoms[srotas].push({
+                symptom: symptom,
+                severity: severity
+            });
+
+            // Update scores
+            if (!srotasData.scores[srotas]) {
+                srotasData.scores[srotas] = 0;
+            }
+            srotasData.scores[srotas] += severity;
+            
+            console.log(`Added ${symptom} to ${srotas} with severity ${severity}. New score: ${srotasData.scores[srotas]}`);
+        }
+
+        function removeSymptom(srotas, symptom) {
+            if (!srotasData.selectedSymptoms[srotas]) {
+                console.error(`Invalid srotas: ${srotas}`);
+                return;
+            }
+
+            const symptoms = srotasData.selectedSymptoms[srotas];
+            const index = symptoms.findIndex(s => s.symptom === symptom);
+            
+            if (index !== -1) {
+                // Remove from score
+                if (!srotasData.scores[srotas]) {
+                    srotasData.scores[srotas] = 0;
+                }
+                srotasData.scores[srotas] -= symptoms[index].severity;
+                
+                // Ensure score doesn't go negative
+                if (srotasData.scores[srotas] < 0) {
+                    srotasData.scores[srotas] = 0;
+                }
+                
+                // Remove from array
+                symptoms.splice(index, 1);
+                
+                console.log(`Removed ${symptom} from ${srotas}. New score: ${srotasData.scores[srotas]}`);
+            }
+        }
+
+        function updateSymptomSeverity(srotas, symptom, newSeverity) {
+            const symptoms = srotasData.selectedSymptoms[srotas];
+            const symptomObj = symptoms.find(s => s.symptom === symptom);
+            
+            if (symptomObj) {
+                // Update score (subtract old, add new)
+                srotasData.scores[srotas] -= symptomObj.severity;
+                srotasData.scores[srotas] += newSeverity;
+                
+                // Update severity
+                symptomObj.severity = newSeverity;
+            }
+        }
+
+        function loadPreviousSrotasData() {
+            const saved = localStorage.getItem('4pcam_srotas_data');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    // Merge saved data with initialized structure
+                    if (data.scores) {
+                        Object.keys(data.scores).forEach(srotas => {
+                            if (srotasData.scores.hasOwnProperty(srotas)) {
+                                srotasData.scores[srotas] = data.scores[srotas];
+                            }
+                        });
+                    }
+                    
+                    if (data.selectedSymptoms) {
+                        Object.keys(data.selectedSymptoms).forEach(srotas => {
+                            if (srotasData.selectedSymptoms.hasOwnProperty(srotas)) {
+                                srotasData.selectedSymptoms[srotas] = data.selectedSymptoms[srotas] || [];
+                            }
+                        });
+                    }
+                    
+                    srotasData.completed = data.completed || false;
+                    srotasData.timestamp = data.timestamp;
+                    
+                    restoreSelections();
+                    console.log('✅ Previous srotas data loaded and merged');
+                } catch (e) {
+                    console.log('Could not load previous srotas data:', e);
+                }
+            } else {
+                console.log('No previous srotas data found - starting fresh');
+            }
+        }
+
+        function restoreSelections() {
+            // Restore selected symptoms and their severities
+            Object.keys(srotasData.selectedSymptoms).forEach(srotas => {
+                srotasData.selectedSymptoms[srotas].forEach(symptomObj => {
+                    const item = document.querySelector(`[data-srotas="${srotas}"][data-symptom="${symptomObj.symptom}"]`);
+                    if (item) {
+                        item.classList.add('selected');
+                        const severityBtn = item.querySelector(`[data-score="${symptomObj.severity}"]`);
+                        if (severityBtn) {
+                            item.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('active'));
+                            severityBtn.classList.add('active');
+                        }
+                    }
+                });
+            });
+        }
+
+        function updateDisplay() {
+            // Update score displays for all srotas
+            const allSrotas = [
+                'pranavaha', 'udakavaha', 'annavaha', 'rasavaha', 'raktavaha',
+                'mamsavaha', 'medavaha', 'asthivaha', 'majjavaha', 'shukravaha',
+                'mutravaha', 'purishavaha', 'swedavaha', 'artavavaha', 'stanyavaha'
+            ];
+
+            allSrotas.forEach(srotas => {
+                const scoreEl = document.getElementById(`${srotas}-score`);
+                if (scoreEl) {
+                    const currentScore = srotasData.scores[srotas] || 0;
+                    scoreEl.textContent = currentScore;
+                } else {
+                    console.error(`Score element NOT FOUND for: ${srotas}-score`);
+                }
+            });
+
+            // Update results
+            updateResults();
+
+            // Update completion button
+            updateCompletionButton();
+        }
+
+
+
+        function updateResults() {
+            let resultsHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">';
+            
+            const srotasNames = {
+                pranavaha: 'Pranavaha',
+                udakavaha: 'Udakavaha',
+                annavaha: 'Annavaha',
+                rasavaha: 'Rasavaha',
+                raktavaha: 'Raktavaha',
+                mamsavaha: 'Mamsavaha',
+                medavaha: 'Medavaha',
+                asthivaha: 'Asthivaha',
+                majjavaha: 'Majjavaha',
+                shukravaha: 'Shukravaha',
+                mutravaha: 'Mutravaha',
+                purishavaha: 'Purishavaha',
+                swedavaha: 'Swedavaha',
+                artavavaha: 'Artavavaha',
+                stanyavaha: 'Stanyavaha'
+            };
+
+            Object.keys(srotasData.scores).forEach(srotas => {
+                const score = srotasData.scores[srotas];
+                
+                let severity = 'normal';
+                let severityText = 'No significant dushti';
+                
+                if (score >= 1 && score <= 3) {
+                    severity = 'mild';
+                    severityText = 'Mild dushti';
+                } else if (score >= 4 && score <= 6) {
+                    severity = 'moderate';
+                    severityText = 'Moderate dushti';
+                } else if (score >= 7) {
+                    severity = 'severe';
+                    severityText = 'Severe dushti';
+                }
+
+                resultsHTML += `
+                    <div>
+                        <strong>${srotasNames[srotas]}:</strong> ${score}<br>
+                        <span class="severity-indicator ${severity}">${severityText}</span>
+                    </div>
+                `;
+            });
+            
+            resultsHTML += '</div>';
+            
+            const totalSymptoms = Object.values(srotasData.selectedSymptoms).reduce((total, symptoms) => {
+                return total + symptoms.length;
+            }, 0);
+            
+            const totalScore = Object.values(srotasData.scores).reduce((total, score) => total + score, 0);
+            
+            resultsHTML += `
+                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 12px; border-left: 4px solid #1976d2;">
+                    <p><strong>Total Selected Symptoms:</strong> ${totalSymptoms} authentic Ayurvedic symptoms</p>
+                    <p><strong>Total Srotas Dushti Score:</strong> ${totalScore}</p>
+                    <p><strong>Overall Assessment:</strong> ${getOverallSrotasStatus(totalScore)}</p>
+                    <p><strong>Systems Affected:</strong> ${getAffectedSystemsCount()} out of 15 srotas</p>
+                </div>
+            `;
+
+            document.getElementById('srotas-results').innerHTML = resultsHTML;
+        }
+
+        function getAffectedSystemsCount() {
+            return Object.values(srotasData.scores).filter(score => score > 0).length;
+        }
+
+        function getOverallSrotasStatus(totalScore) {
+            if (totalScore === 0) return 'No significant srotas dushti identified';
+            if (totalScore <= 15) return 'Mild overall srotas dysfunction';
+            if (totalScore <= 30) return 'Moderate overall srotas dysfunction';
+            if (totalScore <= 50) return 'Severe overall srotas dysfunction';
+            if (totalScore <= 75) return 'Critical srotas dysfunction - requires immediate comprehensive treatment';
+            return 'Extreme srotas pathology - emergency intervention required';
+        }
+
+        function updateCompletionButton() {
+            const completeBtn = document.getElementById('srotas-complete-btn');
+            const selectedCount = Object.values(srotasData.selectedSymptoms).reduce((total, symptoms) => {
+                return total + symptoms.length;
+            }, 0);
+
+            // Enable button if at least some symptoms are selected or if no symptoms (indicating normal)
+            if (selectedCount >= 0) {
+                completeBtn.disabled = false;
+                completeBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            } else {
+                completeBtn.disabled = true;
+                completeBtn.style.background = '#e9ecef';
+            }
+        }
+
+        function saveSrotasData() {
+            srotasData.timestamp = new Date().toISOString();
+            localStorage.setItem('4pcam_srotas_data', JSON.stringify(srotasData));
+        }
+
+        function completeSrotasAssessment() {
+            // Mark as completed
+            srotasData.completed = true;
+            saveSrotasData();
+
+            // Save combined data for final report
+            saveCombinedData();
+
+            const totalScore = Object.values(srotasData.scores).reduce((total, score) => total + score, 0);
+            const affectedSystems = getAffectedSystemsCount();
+
+            alert(`Complete Srotas Assessment Completed Successfully!\n\nTotal Score: ${totalScore}\nAffected Systems: ${affectedSystems}/15\n\nProceeding to Final Assessment Report...`);
+            window.location.href = 'final-assessment.html';
+        }
+
+        function saveCombinedData() {
+            let combinedData = {};
+            
+            // Load existing combined data
+            const existing = localStorage.getItem('4pcam_combined_data');
+            if (existing) {
+                try {
+                    combinedData = JSON.parse(existing);
+                } catch (e) {
+                    combinedData = {};
+                }
+            }
+
+            // Update with current data
+            combinedData.patient = patientData;
+            combinedData.agni = agniData;
+            combinedData.dosha = doshaData;
+            combinedData.dhatu = dhatuData;
+            combinedData.srotas = srotasData;
+            combinedData.timestamp = new Date().toISOString();
+            combinedData.completed = true;
+
+            localStorage.setItem('4pcam_combined_data', JSON.stringify(combinedData));
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveSrotasData();
+                alert('Srotas assessment data saved!');
+            }
+            if (e.key === 'Escape') {
+                window.location.href = 'dhatu-dusti.html';
+            }
+        });
+
+        console.log("✅ Complete 15-Srotas Dusti Assessment System with Authentic Symptoms loaded successfully!");
+    </script>
+</body>
+</html>
