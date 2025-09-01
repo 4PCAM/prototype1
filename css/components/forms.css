@@ -1,0 +1,65 @@
+.patient-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.form-group input, .form-group textarea {
+    padding: 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+.validation-feedback {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #e74c3c;
+    display: none;
+}
+
+.form-group.invalid .validation-feedback {
+    display: block;
+}
+
+.form-group.invalid input,
+.form-group.invalid textarea {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.form-group.valid input,
+.form-group.valid textarea {
+    border-color: #00b894;
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+}
